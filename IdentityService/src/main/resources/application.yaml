@@ -1,0 +1,15 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: "jdbc:mysql://localhost:3306/test"
+    username: root
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+jwt:
+  secretKey: "0dRyKO2u7rdq53FFNbtCvePJjuyd0QKPwFNonlXN0+1f"
+  accessToken: 20 #S
+  refreshToken: 30 #S
