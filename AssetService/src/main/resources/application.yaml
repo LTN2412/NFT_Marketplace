@@ -1,0 +1,26 @@
+server:
+  port: 8082
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/test
+    username: ltn2412
+    password: nhatprola1
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      # properties:
+      #   "[spring.json.type.mapping]": message:com.asset.asset_service.model.dto.kafka.KafkaMessage
+# logging:
+#   file:
+#     name: asset.log
+#   level:
+#     root: info
