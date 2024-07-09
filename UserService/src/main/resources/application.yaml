@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8084
 spring:
   neo4j:
     uri: neo4j+s://3ad2a5fe.databases.neo4j.io
