@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequestMapping("/author")
+@RequestMapping("/asset/author")
 public class AuthorController {
     AuthorService authorService;
 

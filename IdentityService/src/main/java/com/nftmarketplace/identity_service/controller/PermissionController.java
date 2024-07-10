@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -22,13 +23,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
+@RequestMapping("/identity/permission")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PermissionController {
     PermissionService permissionService;
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @PostMapping("/permission")
+    @PostMapping("")
     public APIResponse<Permission> createPermission(@RequestBody PermissionRequest request) {
         Permission permission = permissionService.createPermission(request);
         return APIResponse.<Permission>builder()
@@ -37,7 +39,7 @@ public class PermissionController {
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @GetMapping("/permission")
+    @GetMapping("")
     public APIResponse<Permission> getPermission(@RequestParam String name) {
         Permission permission = permissionService.getPermission(name);
         return APIResponse.<Permission>builder()
@@ -46,7 +48,7 @@ public class PermissionController {
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @GetMapping("/permissions")
+    @GetMapping("/all")
     public APIResponse<List<Permission>> getAllPermission() {
         List<Permission> allPermission = permissionService.getAllPermission();
         return APIResponse.<List<Permission>>builder()
@@ -55,7 +57,7 @@ public class PermissionController {
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @PutMapping("permission")
+    @PutMapping("")
     public APIResponse<Permission> updatePermission(@RequestBody PermissionRequest request) {
         Permission updatePermission = permissionService.updatePermission(request);
         return APIResponse.<Permission>builder()
@@ -64,7 +66,7 @@ public class PermissionController {
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @DeleteMapping("permission")
+    @DeleteMapping("")
     public APIResponse<Void> deletePermission(@RequestParam String name) {
         permissionService.deletePermission(name);
         return APIResponse.<Void>builder()

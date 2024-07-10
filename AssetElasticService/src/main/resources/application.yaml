@@ -1,6 +1,8 @@
 server:
   port: 8083
 spring:
+  application:
+    name: Asset Elastic Service
   kafka:
     consumer:
       auto-offset-reset: earliest
@@ -11,3 +13,7 @@ spring:
     redis:
       host: 127.0.0.1
       port: 6379
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

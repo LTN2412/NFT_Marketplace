@@ -1,8 +1,14 @@
 server:
   port: 8084
 spring:
+  application:
+    name: User Service
   neo4j:
     uri: neo4j+s://3ad2a5fe.databases.neo4j.io
     authentication:
       username: neo4j
       password: nhatprola1
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

@@ -13,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -23,13 +24,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
+@RequestMapping("/identity/role")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RoleController {
     RoleService roleService;
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @PostMapping("/role")
+    @PostMapping("")
     public APIResponse<Role> createRole(@RequestBody RoleRequest request) {
         Role role = roleService.createRole(request);
         return APIResponse.<Role>builder()
@@ -38,7 +40,7 @@ public class RoleController {
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @GetMapping("/role")
+    @GetMapping("")
     public APIResponse<Role> getRole(@RequestParam String name) {
         Role role = roleService.getRole(name);
         return APIResponse.<Role>builder()
@@ -47,7 +49,7 @@ public class RoleController {
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @GetMapping("/roles")
+    @GetMapping("/all")
     public APIResponse<List<Role>> getAllRole() {
         List<Role> allRole = roleService.getAllRoles();
         return APIResponse.<List<Role>>builder()
@@ -56,7 +58,7 @@ public class RoleController {
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @PutMapping("/role")
+    @PutMapping("")
     public APIResponse<Role> updateRole(@RequestBody RoleRequest request) {
         Role updateRole = roleService.updateRole(request);
         return APIResponse.<Role>builder()
@@ -65,7 +67,7 @@ public class RoleController {
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @DeleteMapping("/role")
+    @DeleteMapping("")
     public APIResponse<Void> deleteRole(@RequestParam String name) {
         roleService.deleteRole(name);
         return APIResponse.<Void>builder()

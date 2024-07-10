@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar/Navbar";
-import HeroSection from "./HomePage/HeroSection/HeroSection";
-import TrendingCollection from "./HomePage/TrendingCollection/TrendingCollection";
-import TopCreator from "./HomePage/TopCreator/TopCreator";
+import HeroSection from "./HeroSection/HeroSection";
+import TrendingCollection from "./TrendingCollection/TrendingCollection";
+import TopCreator from "./TopCreator/TopCreator";
 
 export default function HomePage() {
   return (

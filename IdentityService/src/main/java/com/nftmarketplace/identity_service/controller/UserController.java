@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
+@RequestMapping("/identity/user")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
@@ -35,7 +37,7 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("/user")
+    @GetMapping("")
     public APIResponse<User> getUser(@RequestParam String id) {
         User user = userService.getUser(id);
         return APIResponse.<User>builder()
@@ -44,7 +46,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @GetMapping("/users")
+    @GetMapping("/all")
     public APIResponse<List<User>> getAllUser() {
         List<User> users = userService.getAllUsers();
         return APIResponse.<List<User>>builder()
@@ -52,7 +54,7 @@ public class UserController {
                 .build();
     }
 
-    @PutMapping("/user")
+    @PutMapping("")
     public APIResponse<User> updateUser(@RequestBody UserCreationRequest request) {
         User updateUser = userService.updateUser(request);
         return APIResponse.<User>builder()
@@ -61,7 +63,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    @DeleteMapping("/user")
+    @DeleteMapping("")
     public APIResponse<Void> deleteUser(String id) {
         userService.deleteUser(id);
         return APIResponse.<Void>builder()

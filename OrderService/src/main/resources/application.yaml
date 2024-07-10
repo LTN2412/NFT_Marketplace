@@ -1,2 +1,9 @@
 server:
   port: 8085
+spring:
+  application:
+    name: Order Service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

@@ -1,0 +1,36 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: API Gateway
+  cloud:
+    gateway:
+      routes:
+        - id: Identity Service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/identity/**
+
+        - id: Asset Service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/asset/**
+
+        - id: Asset Elastic Service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/elastic/**
+
+        - id: User Service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/user/**
+
+        - id: Order Service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/order/**
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
