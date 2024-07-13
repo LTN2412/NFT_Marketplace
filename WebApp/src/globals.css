@@ -9,8 +9,9 @@
     --background: #2b2b2b;
     --background2: #3b3b3b;
     --foreground: #fff;
-    --button: #a259ff;
-
+    --purple: #a259ff;
+    --gray: #858585;
+    --lightGray: #cccccc;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
 
