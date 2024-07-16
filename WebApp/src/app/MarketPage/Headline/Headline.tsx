@@ -13,7 +13,9 @@ export default function Headline() {
       <Input
         placeholder="Search your favourite NFTs"
         className="h-12 rounded-xl border-gray bg-background placeholder:text-gray focus-visible:border-foreground"
-        EndIcon={<SearchIcon className=" mr-4 w-6 fill-slate-100" />}
+        EndIcon={
+          <SearchIcon className="mr-4 w-6 cursor-pointer fill-slate-100" />
+        }
       ></Input>
     </div>
   );

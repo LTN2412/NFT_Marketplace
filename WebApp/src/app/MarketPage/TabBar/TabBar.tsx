@@ -8,10 +8,10 @@ export default function TabBar() {
         <TabsList className="h-20 w-full px-10">
           <TabsTrigger
             value="NFTs"
-            className="text -gray  w-1/2 pb-5 data-[state=active]:border-b-2 data-[state=active]:border-lightGray"
+            className="w-1/2  pb-5 text-gray data-[state=active]:border-b-2 data-[state=active]:border-lightGray"
           >
-            <p className="pr-4">NFTs</p>
-            <div className="h-6 w-14 rounded-3xl bg-lightGray font-light">
+            <p className="sm:pr-4">NFTs</p>
+            <div className="h-6 w-14 rounded-3xl bg-lightGray font-light text-black max-sm:hidden">
               312
             </div>
           </TabsTrigger>
@@ -19,8 +19,8 @@ export default function TabBar() {
             value="Collections"
             className="w-1/2 pb-5 text-gray data-[state=active]:border-b-2 data-[state=active]:border-lightGray"
           >
-            <p className="pr-4">Collections</p>
-            <div className="h-6 w-14 rounded-3xl bg-lightGray font-light">
+            <p className="sm:pr-4">Collections</p>
+            <div className="h-6 w-14 rounded-3xl bg-lightGray font-light text-black max-sm:hidden">
               123
             </div>
           </TabsTrigger>

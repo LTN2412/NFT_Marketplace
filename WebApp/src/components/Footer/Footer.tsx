@@ -1,12 +1,12 @@
 import StoreFrontIcon from "@/assets/Storefront.svg?react";
-import Community from "./Community/Community";
+import EmailIcon from "@/assets/Email.svg?react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import EmailIcon from "@/assets/Email.svg?react";
+import Community from "./Community/Community";
 export default function Footer() {
   return (
-    <div className="flex h-full w-full flex-col gap-2 border-t-2 border-gray bg-background2 px-8 py-12">
+    <div className="flex h-full w-full flex-col gap-2 border-t-2 border-gray bg-background2 px-8 py-12 lg:flex-row">
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-3 font-mono text-2xl">
           <StoreFrontIcon className=" w-10 fill-current text-purple" />
@@ -37,15 +37,16 @@ export default function Footer() {
         <p className="text-lightGray">
           Get exclusive promotions & updates straight to your inbox.
         </p>
-        <div className="flex flex-col gap-4 lg:flex-row lg:gap-0">
+        <div className="md: flex flex-col gap-4 md:flex-row md:gap-0">
           <Input
             type="email"
             placeholder="Enter your email here"
-            className="h-12 w-full rounded-2xl bg-foreground text-black lg:w-[200px] lg:rounded-r-none lg:focus:outline-none"
+            className="h-12 w-full rounded-2xl border bg-foreground text-black hover:border-red-500 md:w-[300px] md:pr-10 md:focus-visible:ring-0"
           />
           <Button
             type="submit"
-            className="flex h-12 w-full items-center justify-center gap-1 rounded-2xl bg-purple hover:bg-purple hover:opacity-80 focus:outline-none lg:absolute lg:left-[250px] lg:w-[150px]"
+            className="flex h-12 w-full items-center justify-center gap-1 rounded-2xl bg-purple hover:bg-purple hover:opacity-80 md:absolute md:left-[300px] md:w-[140px] md:hover:opacity-100
+            "
           >
             <EmailIcon className="w-7 fill-foreground lg:hidden" />
             Subscribe

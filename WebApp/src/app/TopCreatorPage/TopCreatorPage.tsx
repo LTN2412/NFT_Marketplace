@@ -1,9 +1,9 @@
 import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
-import Headline from "./Headline/HeadLine";
+import Headline from "./HeadLine/HeadLine";
 import TabBar from "./TabBar/TabBar";
 
-export default function MarketPage() {
+export default function TopCreatorPage() {
   return (
     <div>
       <Navbar />

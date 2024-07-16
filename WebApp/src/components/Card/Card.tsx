@@ -1,12 +1,72 @@
-import CardInfo from "./CardInfo/CardInfo";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import FirstCharName from "@/utils/FirstCharName";
+import { AvatarImage } from "@radix-ui/react-avatar";
+import React from "react";
 
-export default function Card() {
-  return (
-    <div className="w-[320px] rounded-3xl bg-background">
-      <div className="rounded-t-3xl">
-        <img src="/test.png" className="object-cover"></img>
-      </div>
-      <CardInfo />
-    </div>
-  );
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  assetSrc: string;
+  assetName: string;
+  assetPrice: string;
+  assetHighestBid: string;
+  authorSrc: string;
+  authorName: string;
 }
+
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  (
+    {
+      className,
+      assetSrc,
+      assetName,
+      assetPrice,
+      assetHighestBid,
+      authorSrc,
+      authorName,
+      ...props
+    },
+    ref,
+  ) => {
+    return (
+      <div
+        className={cn("w-[320px] rounded-3xl bg-background", className)}
+        ref={ref}
+        {...props}
+      >
+        <div className="rounded-t-3xl">
+          <img src={assetSrc} className="object-cover"></img>
+        </div>
+
+        <div className="flex flex-col gap-5 p-5">
+          <p className="text-2xl font-bold">{assetName}</p>
+
+          <div className="flex items-center gap-2">
+            <Avatar>
+              <AvatarImage src={authorSrc} className="w-56 rounded-full" />
+              <AvatarFallback className="text-black">
+                {FirstCharName(authorName)}
+              </AvatarFallback>
+            </Avatar>
+            <p className="font-mono">{authorName}</p>
+          </div>
+
+          <div className="font-mono">
+            <div className="flex justify-between">
+              <div className="text-left">
+                <p className=" text-gray">Price</p>
+                <p className="font-light">{assetPrice} ETH</p>
+              </div>
+
+              <div className="text-right">
+                <p className="text-gray">Highest Bid</p>
+                <p className="font-light">{assetHighestBid} wETH</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  },
+);
+
+export default Card;

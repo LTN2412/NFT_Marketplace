@@ -60,6 +60,7 @@ module.exports = {
       },
       fontFamily: {
         primary: "var(--font-primary)",
+        mono: "var(--font-mono)",
       },
       borderRadius: {
         lg: "var(--radius)",
