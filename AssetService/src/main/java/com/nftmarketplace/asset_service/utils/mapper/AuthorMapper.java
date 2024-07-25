@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import com.nftmarketplace.asset_service.model.Author;
+import com.nftmarketplace.asset_service.model.dto.request.AuthorElastic;
 import com.nftmarketplace.asset_service.model.dto.request.AuthorRequest;
 
 @Mapper(componentModel = "spring")
@@ -18,4 +19,6 @@ public interface AuthorMapper {
     @Mapping(source = "assets", target = "assets")
     Author toAuthor(Author author);
 
+    @Mapping(target = "assetIds", ignore = true)
+    AuthorElastic toAuthorElastic(Author author);
 }

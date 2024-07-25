@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,7 +31,24 @@ public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
+
+    @Column(unique = true, nullable = false)
     String name;
+
+    @Column(name = "avatar_path")
+    String avatarPath;
+
+    @Column(name = "cover_img_path")
+    String coverImgPath;
+
+    Float volumne;
+
+    @Column(name = "nft_solds")
+    Long nftSolds;
+
+    Long followers;
+
+    String bio;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "author_id")

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.nftmarketplace.asset_elastic_search.dto.kakfa.KafkaMessage;
 import com.nftmarketplace.asset_elastic_search.model.Asset;
+import com.nftmarketplace.asset_elastic_search.model.Author;
 import com.nftmarketplace.asset_elastic_search.repository.AssetRepository;
+import com.nftmarketplace.asset_elastic_search.repository.AuthorRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +22,20 @@ import lombok.experimental.FieldDefaults;
 public class AssetService {
 
     AssetRepository assetRepository;
+    AuthorRepository authorRepository;
 
     public void consumerAsset(KafkaMessage<Asset> message) {
+        Asset asset = message.getData();
         switch (message.getAction()) {
             case "CREATE":
-                if (assetRepository.existsById(message.getData().getId())) {
+                if (assetRepository.existsById(asset.getId())) {
                     // throw to topic errs
                 }
-                assetRepository.save(message.getData());
+                assetRepository.save(asset);
+                Author author = authorRepository.findById(asset.getAuthorId()).orElseThrow();
+                Set<String> assetIds = author.getAssetIds();
+                assetIds.add(asset.getId());
+                authorRepository.save(author);
                 break;
             case "UPDATE":
                 if (!assetRepository.existsById(message.getData().getId())) {

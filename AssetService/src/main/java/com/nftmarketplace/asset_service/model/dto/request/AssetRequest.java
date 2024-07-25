@@ -15,7 +15,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AssetRequest {
-
     String name;
     String description;
     Set<String> tags;
@@ -23,5 +22,4 @@ public class AssetRequest {
     Float highestBid;
     String imgPath;
     String authorId;
-
 }

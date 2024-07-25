@@ -12,6 +12,7 @@ import com.nftmarketplace.asset_service.configuration.exception.ErrorCode;
 import com.nftmarketplace.asset_service.model.Asset;
 import com.nftmarketplace.asset_service.model.Author;
 import com.nftmarketplace.asset_service.model.dto.kafka.KafkaMessage;
+import com.nftmarketplace.asset_service.model.dto.request.AuthorElastic;
 import com.nftmarketplace.asset_service.model.dto.request.AuthorRequest;
 import com.nftmarketplace.asset_service.repository.AssetRepository;
 import com.nftmarketplace.asset_service.repository.AuthorRepository;
@@ -38,9 +39,11 @@ public class AuthorService {
             author.setAssets(new HashSet<>(assets));
         }
         Author saveAuthor = authorRepository.save(author);
-        KafkaMessage<Author> kafkaMessage = KafkaMessage.<Author>builder()
+        AuthorElastic authorElastic = AuthorMapper.INSTANCE.toAuthorElastic(saveAuthor);
+        authorElastic.setAssetIds(request.getAssets());
+        KafkaMessage<AuthorElastic> kafkaMessage = KafkaMessage.<AuthorElastic>builder()
                 .action("CREATE")
-                .data(saveAuthor)
+                .data(authorElastic)
                 .build();
         kafkaTemplate.send("author", kafkaMessage);
         return saveAuthor;

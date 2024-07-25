@@ -10,7 +10,7 @@ import { AvatarFallback } from "@radix-ui/react-avatar";
 import FirstCharName from "@/utils/FirstCharName";
 
 export interface AssetDetailProps extends React.HTMLAttributes<HTMLDivElement> {
-  assetSrc: string;
+  assetImg: string;
   assetName: string;
   mintedAt: string;
   authorAvatar: string;
@@ -23,7 +23,7 @@ const AssetDetail = React.forwardRef<HTMLDivElement, AssetDetailProps>(
   (
     {
       className,
-      assetSrc,
+      assetImg,
       assetName,
       mintedAt,
       authorAvatar,
@@ -37,7 +37,7 @@ const AssetDetail = React.forwardRef<HTMLDivElement, AssetDetailProps>(
     return (
       <div className={cn(className)} ref={ref} {...props}>
         <div>
-          <img src={assetSrc} className="object-cover"></img>
+          <img src={assetImg} className="object-cover"></img>
         </div>
         <div className="flex flex-col gap-4 bg-background px-8 py-12">
           <p className="text-5xl font-bold">{assetName}</p>

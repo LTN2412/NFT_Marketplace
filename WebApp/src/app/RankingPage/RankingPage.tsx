@@ -1,13 +1,13 @@
 import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
-import Headline from "./HeadLine/HeadLine";
+import HeadLine from "./HeadLine/HeadLine";
 import TabBar from "./TabBar/TabBar";
 
-export default function TopCreatorPage() {
+export default function RankingPage() {
   return (
     <div>
       <Navbar />
-      <Headline />
+      <HeadLine />
       <TabBar />
       <Footer />
     </div>

@@ -16,5 +16,11 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthorRequest {
     String name;
+    String avatarPath;
+    String coverImgPath;
+    String bio;
+    Float volumne;
+    Long nftSolds;
+    Long followers;
     Set<String> assets;
 }

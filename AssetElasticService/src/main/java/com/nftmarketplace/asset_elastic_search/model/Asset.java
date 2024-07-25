@@ -30,8 +30,8 @@ public class Asset {
     @Field(type = FieldType.Text)
     String description;
 
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
-    Date timestamp_create;
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time, name = "timestamp_create")
+    Date timestampCreate;
 
     @Field(type = FieldType.Keyword)
     Set<String> tags;

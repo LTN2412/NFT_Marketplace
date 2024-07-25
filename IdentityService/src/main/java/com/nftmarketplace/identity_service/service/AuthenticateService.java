@@ -42,6 +42,7 @@ public class AuthenticateService {
     @NonFinal
     @Value("${jwt.secretKey}")
     String secretKey;
+
     @NonFinal
     @Value("${jwt.accessToken}")
     Long accessTokenExpiredTime;

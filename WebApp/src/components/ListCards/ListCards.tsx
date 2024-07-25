@@ -12,7 +12,7 @@ const ListCards = React.forwardRef<HTMLDivElement, ListCardsProps>(
     return (
       <div
         className={cn(
-          "grid grid-cols-1 justify-items-center gap-10 bg-background px-8 py-12",
+          "grid grid-cols-1 justify-items-center gap-10 bg-background px-8 py-12 md:grid-cols-2 lg:grid-cols-3",
           className,
         )}
         ref={ref}

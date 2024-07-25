@@ -1,5 +1,7 @@
 package com.nftmarketplace.asset_elastic_search.model;
 
+import java.util.Set;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -15,8 +17,27 @@ import lombok.experimental.FieldDefaults;
 public class Author {
 
     @Id
-    private String id;
+    String id;
 
     @Field(type = FieldType.Text)
-    private String name;
+    String name;
+
+    @Field(type = FieldType.Text, name = "avatar_path")
+    String avatarPath;
+
+    @Field(type = FieldType.Text, name = "cover_img_path")
+    String coverImgPath;
+
+    @Field(type = FieldType.Float)
+    Float volumne;
+
+    @Field(type = FieldType.Integer, name = "nft_solds")
+    Long nftSolds;
+
+    @Field(type = FieldType.Integer)
+    Long followers;
+
+    @Field(type = FieldType.Keyword, name = "asset_ids")
+    Set<String> assetIds;
+
 }

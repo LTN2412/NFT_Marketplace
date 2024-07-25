@@ -22,12 +22,15 @@ public class AuthorService {
     AuthorRepository authorRepository;
 
     public void consumerAuthor(KafkaMessage<Author> message) {
+        Author author = message.getData();
         switch (message.getAction()) {
             case "CREATE":
                 if (authorRepository.existsById(message.getData().getId())) {
                     // throw to topic errs
                 }
-                authorRepository.save(message.getData());
+                if (author.getAssetIds() == null)
+                    author.setAssetIds(new HashSet<>());
+                authorRepository.save(author);
                 break;
             case "UPDATE":
                 if (!authorRepository.existsById(message.getData().getId())) {

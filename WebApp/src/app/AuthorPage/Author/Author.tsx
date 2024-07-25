@@ -49,8 +49,8 @@ const Author = React.forwardRef<HTMLDivElement, AuthorProps>(
             <AvatarFallback>{FirstCharName(authorName)}</AvatarFallback>
           </Avatar>
         </div>
-        <div className="flex flex-col gap-6 px-8 py-12">
-          <p className="text-4xl font-bold">{authorName}</p>
+        <h1 className="gap-6 py-12">
+          <p className="text-4xl font-bold max-sm:self-center">{authorName}</p>
           <Button className="flex h-14 w-full items-center gap-2 rounded-xl border-2 border-purple bg-background hover:bg-background hover:opacity-80">
             <PlusIcon className="w-6 fill-purple" />
             Follow
@@ -85,7 +85,7 @@ const Author = React.forwardRef<HTMLDivElement, AuthorProps>(
               <InstagramIcon className="w-10 cursor-pointer fill-gray" />
             </div>
           </div>
-        </div>
+        </h1>
       </div>
     );
   },

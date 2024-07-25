@@ -84,4 +84,10 @@ body::-webkit-scrollbar {
   body {
     @apply font-primary text-foreground;
   }
+  h1 {
+    @apply flex w-full flex-col bg-background px-10 md:px-16 lg:px-24;
+  }
+  b {
+    @apply whitespace-nowrap text-[43px] font-bold;
+  }
 }

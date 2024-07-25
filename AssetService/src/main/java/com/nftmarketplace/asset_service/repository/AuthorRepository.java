@@ -17,5 +17,5 @@ public interface AuthorRepository extends JpaRepository<Author, String> {
     @EntityGraph(attributePaths = "assets")
     Optional<Author> findById(String id);
 
-    boolean existsByName(String id);
+    boolean existsByName(String name);
 }

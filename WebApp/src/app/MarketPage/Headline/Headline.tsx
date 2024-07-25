@@ -1,13 +1,11 @@
 import { Input } from "@/components/ui/input";
 import SearchIcon from "@/assets/Search.svg?react";
 
-export default function Headline() {
+export default function HeadLine() {
   return (
-    <div className="mx- flex flex-col gap-4 bg-background px-10 py-12">
-      <p className="whitespace-nowrap text-[43px] font-bold">
-        Browse marketplace
-      </p>
-      <p className="text-xl">
+    <h1 className="gap-4 py-12">
+      <b>Browse marketplace</b>
+      <p className="text-xl font-medium">
         Browse through more than 50k NFTs on the NFT Marketplace.
       </p>
       <Input
@@ -17,6 +15,6 @@ export default function Headline() {
           <SearchIcon className="mr-4 w-6 cursor-pointer fill-slate-100" />
         }
       ></Input>
-    </div>
+    </h1>
   );
 }

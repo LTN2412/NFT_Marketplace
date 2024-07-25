@@ -5,17 +5,22 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nftmarketplace.asset_service.model.Asset;
 import com.nftmarketplace.asset_service.model.dto.APIResponse;
 import com.nftmarketplace.asset_service.model.dto.request.AssetRequest;
+import com.nftmarketplace.asset_service.model.dto.response.AssetCardResponse;
+import com.nftmarketplace.asset_service.model.dto.response.AssetInfoResponse;
 import com.nftmarketplace.asset_service.service.AssetService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/asset")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AssetController {
     AssetService assetService;
 
@@ -37,9 +43,9 @@ public class AssetController {
     }
 
     @GetMapping("")
-    public APIResponse<Asset> getAsset(@RequestParam String id) {
-        Asset getAsset = assetService.getAsset(id);
-        return APIResponse.<Asset>builder()
+    public APIResponse<AssetInfoResponse> getAsset(@RequestParam String id) {
+        AssetInfoResponse getAsset = assetService.getAssetId(id);
+        return APIResponse.<AssetInfoResponse>builder()
                 .result(getAsset)
                 .build();
     }
@@ -49,6 +55,16 @@ public class AssetController {
         List<Asset> allAssets = assetService.getAllAssets();
         return APIResponse.<List<Asset>>builder()
                 .result(allAssets)
+                .build();
+    }
+
+    @GetMapping("/card")
+    public APIResponse<List<AssetCardResponse>> getAssetCards(@RequestParam int page, @RequestParam int limit) {
+        Page<AssetCardResponse> assetCards = assetService.getAssetCards(page, limit);
+        return APIResponse.<List<AssetCardResponse>>builder()
+                .totalElement(assetCards.getTotalElements())
+                .totalPage(assetCards.getTotalPages())
+                .result(assetCards.getContent())
                 .build();
     }
 

@@ -1,5 +1,7 @@
 package com.nftmarketplace.identity_service.configuration;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,14 +19,18 @@ import com.nftmarketplace.identity_service.exception.JwtAuthenticateEntryPoint;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-        private String[] PUBLIC_ENDPOINTS = { "register", "token", "introspect", "test" };
+        private String prefixEndpoint = "identity/";
+        private String[] PUBLIC_ENDPOINTS = { "user/register", "token", "introspect" };
 
         @Bean
         SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+
                 httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
                 httpSecurity.authorizeHttpRequests(request -> request
-                                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                                .requestMatchers(HttpMethod.POST, Arrays.stream(PUBLIC_ENDPOINTS)
+                                                .map(endpoint -> prefixEndpoint + endpoint).toArray(String[]::new))
+                                .permitAll()
                                 .anyRequest()
                                 .authenticated());
 

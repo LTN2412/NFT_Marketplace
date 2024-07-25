@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -32,14 +33,12 @@ public class Asset {
     @Column(unique = true, nullable = false)
     String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     String description;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false, name = "timestamp_create")
     Date timestampCreate;
-
-    Set<String> tags;
 
     Float price;
 
@@ -56,4 +55,7 @@ public class Asset {
     private void create() {
         timestampCreate = new Date();
     }
+
+    @ManyToMany
+    Set<Tag> tags;
 }

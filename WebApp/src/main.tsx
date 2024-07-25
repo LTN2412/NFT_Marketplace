@@ -3,9 +3,18 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import "./globals.css";
 import router from "./routers/index.tsx";
+// import { Provider } from "react-redux";
+// import store from "./store.ts";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+    {/* <Provider store={store}> */}
+    <QueryClientProvider client={new QueryClient()}>
+      <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={true} />
+    </QueryClientProvider>
+    {/* </Provider> */}
+  </React.StrictMode>,
 );

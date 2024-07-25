@@ -29,7 +29,13 @@ public class FakerService {
         try {
             for (int i = 0; i < count; i++) {
                 AuthorRequest author = AuthorRequest.builder()
-                        .name(faker.name().fullName() + String.valueOf(faker.random().nextDouble()))
+                        .name(faker.name().fullName() + String.valueOf(faker.random().nextInt(1, 100)))
+                        .avatarPath(faker.internet().image())
+                        .coverImgPath(faker.internet().image())
+                        .volumne((float) faker.number().randomDouble(2, 1000, 10000))
+                        .nftSolds((long) faker.number().randomNumber())
+                        .followers((long) faker.number().randomNumber())
+                        .bio(faker.lorem().paragraph())
                         .build();
                 Author saveAuthor = authorService.createAuthor(author);
                 String author_id = saveAuthor.getId();
@@ -38,8 +44,8 @@ public class FakerService {
                     tags.add(faker.commerce().material());
                     tags.add(faker.commerce().department());
                     AssetRequest asset = AssetRequest.builder()
-                            .name(faker.commerce().productName() + String.valueOf(faker.random().nextDouble()))
-                            .description(faker.lorem().sentence())
+                            .name(faker.commerce().productName() + String.valueOf(faker.random().nextInt(1, 100)))
+                            .description(faker.lorem().paragraph())
                             .tags(tags)
                             .price((float) faker.number().randomDouble(2, 10, 1000))
                             .highestBid((float) faker.number().randomDouble(2, 10, 1000))

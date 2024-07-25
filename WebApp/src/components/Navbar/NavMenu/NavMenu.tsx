@@ -24,16 +24,16 @@ export default function NavMenu() {
           onClick={handleClick}
         >
           <Link
-            to={"/marketplace"}
+            to={"/marketplace/nfts"}
             className="hover:bg-gray-500 w-full cursor-pointer py-4 font-bold"
           >
             Marketplace
           </Link>
           <Link
-            to={"/rankings"}
+            to={"/ranking"}
             className="hover:bg-gray-500 w-full cursor-pointer py-4 font-bold"
           >
-            Rankings
+            Ranking
           </Link>
           <Link
             to={"/wallet"}
@@ -41,23 +41,31 @@ export default function NavMenu() {
           >
             Connect a wallet
           </Link>
+          <Link
+            to={"/signup"}
+            className="hover:bg-gray-500 w-full cursor-pointer py-4 font-bold"
+          >
+            Sign Up
+          </Link>
         </div>
       </div>
       {/* Laptop */}
       <div className="hidden items-center gap-8 text-xl font-medium lg:flex">
-        <Link to={"/marketplace"} className="cursor-pointer">
+        <Link to={"/marketplace/nfts"} className="cursor-pointer">
           Marketplace
         </Link>
-        <Link to={"/rankings"} className="cursor-pointer">
-          Rankings
+        <Link to={"/ranking"} className="cursor-pointer">
+          Ranking
         </Link>
         <Link to={"/wallet"} className="cursor-pointer">
           Connect a wallet
         </Link>
-        <Button className="cursor-pointer gap-2 rounded-xl bg-button hover:bg-button hover:opacity-80">
-          <UserIcon className="w-5 fill-current text-foreground" />
-          <p>Sign Up</p>
-        </Button>
+        <Link to={"/signup"}>
+          <Button className="cursor-pointer gap-2 rounded-xl bg-button hover:bg-button hover:opacity-80">
+            <UserIcon className="w-5 fill-current text-foreground" />
+            <p>Sign Up</p>
+          </Button>
+        </Link>
       </div>
     </div>
   );
