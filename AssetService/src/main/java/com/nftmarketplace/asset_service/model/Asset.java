@@ -5,8 +5,6 @@ import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
@@ -27,7 +25,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Asset {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
     @Column(unique = true, nullable = false)
@@ -35,10 +32,6 @@ public class Asset {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     String description;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(updatable = false, name = "timestamp_create")
-    Date timestampCreate;
 
     Float price;
 
@@ -48,8 +41,12 @@ public class Asset {
     @Column(name = "img_path")
     String imgPath;
 
-    @Column(name = "author_id", nullable = false)
+    @Column(name = "author_id")
     String authorId;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false, name = "timestamp_create")
+    Date timestampCreate;
 
     @PrePersist
     private void create() {

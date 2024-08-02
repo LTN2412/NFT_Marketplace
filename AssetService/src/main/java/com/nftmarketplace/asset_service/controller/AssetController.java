@@ -5,9 +5,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nftmarketplace.asset_service.model.Asset;
 import com.nftmarketplace.asset_service.model.dto.APIResponse;
 import com.nftmarketplace.asset_service.model.dto.request.AssetRequest;
-import com.nftmarketplace.asset_service.model.dto.response.AssetCardResponse;
-import com.nftmarketplace.asset_service.model.dto.response.AssetInfoResponse;
+import com.nftmarketplace.asset_service.model.dto.response.AssetsPageable;
+import com.nftmarketplace.asset_service.model.dto.response.AssetFlat;
+import com.nftmarketplace.asset_service.model.dto.response.AssetInfo;
 import com.nftmarketplace.asset_service.service.AssetService;
+import com.nftmarketplace.asset_service.utils.mapper.AssetMapper;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +20,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Set;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,29 +48,32 @@ public class AssetController {
                 .build();
     }
 
+    @Cacheable(value = "asset", key = "#id")
     @GetMapping("")
-    public APIResponse<AssetInfoResponse> getAsset(@RequestParam String id) {
-        AssetInfoResponse getAsset = assetService.getAssetId(id);
-        return APIResponse.<AssetInfoResponse>builder()
+    public APIResponse<AssetInfo> getAsset(@RequestParam String id) {
+        AssetInfo getAsset = assetService.getAssetId(id);
+        return APIResponse.<AssetInfo>builder()
                 .result(getAsset)
                 .build();
     }
 
     @GetMapping("/all")
-    public APIResponse<List<Asset>> getAllAssets() {
-        List<Asset> allAssets = assetService.getAllAssets();
-        return APIResponse.<List<Asset>>builder()
-                .result(allAssets)
+    public APIResponse<Set<AssetFlat>> getAllAssets() {
+        Set<Asset> allAssets = assetService.getAllAssets();
+        Set<AssetFlat> assetsFlat = AssetMapper.INSTANCE.toAssetsFlat(allAssets);
+        return APIResponse.<Set<AssetFlat>>builder()
+                .result(assetsFlat)
                 .build();
     }
 
-    @GetMapping("/card")
-    public APIResponse<List<AssetCardResponse>> getAssetCards(@RequestParam int page, @RequestParam int limit) {
-        Page<AssetCardResponse> assetCards = assetService.getAssetCards(page, limit);
-        return APIResponse.<List<AssetCardResponse>>builder()
-                .totalElement(assetCards.getTotalElements())
-                .totalPage(assetCards.getTotalPages())
-                .result(assetCards.getContent())
+    @Cacheable(value = "assets", key = "#offset+'|'+#limit")
+    @GetMapping("/page")
+    public APIResponse<List<AssetsPageable>> getAssetsPageable(@RequestParam int offset, @RequestParam int limit) {
+        Page<AssetsPageable> assetsPageable = assetService.getAssetsPageable(offset, limit);
+        return APIResponse.<List<AssetsPageable>>builder()
+                .totalElement(assetsPageable.getTotalElements())
+                .totalPage(assetsPageable.getTotalPages())
+                .result(assetsPageable.getContent())
                 .build();
     }
 
@@ -76,6 +85,10 @@ public class AssetController {
                 .build();
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "assets", allEntries = true),
+            @CacheEvict(value = "asset", key = "#id")
+    })
     @DeleteMapping("")
     public APIResponse<Void> deleteAsset(@RequestParam String id) {
         assetService.deleteAsset(id);

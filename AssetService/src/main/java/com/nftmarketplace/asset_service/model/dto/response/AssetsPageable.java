@@ -1,28 +1,39 @@
 package com.nftmarketplace.asset_service.model.dto.response;
 
-import java.util.Set;
-
-import com.nftmarketplace.asset_service.model.Tag;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AssetInfoResponse {
+public class AssetsPageable {
     String id;
     String name;
-    String description;
     String imgPath;
     Float price;
     Float highestBid;
     String authorId;
     String authorName;
     String authorAvatarPath;
-    Set<Tag> tags;
 }
+// public interface AssetCard {
+// String getId();
+
+// String getName();
+
+// String getImgPath();
+
+// String getPrice();
+
+// String getHighestBid();
+
+// String getAuthorId();
+
+// String getAuthorName();
+
+// String getAuthorAvatarPath();
+// }

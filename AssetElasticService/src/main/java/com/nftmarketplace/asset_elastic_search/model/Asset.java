@@ -22,9 +22,10 @@ import lombok.experimental.FieldDefaults;
 @Document(indexName = "asset")
 public class Asset {
     @Id
+    @Field(type = FieldType.Keyword)
     String id;
 
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Text)
     String name;
 
     @Field(type = FieldType.Text)
@@ -33,7 +34,7 @@ public class Asset {
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time, name = "timestamp_create")
     Date timestampCreate;
 
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Text)
     Set<String> tags;
 
     @Field(type = FieldType.Float)
@@ -42,9 +43,15 @@ public class Asset {
     @Field(type = FieldType.Float, name = "highest_bid")
     Float highestBid;
 
-    @Field(type = FieldType.Text, name = "img_path")
+    @Field(type = FieldType.Keyword, name = "img_path", index = false)
     String imgPath;
 
     @Field(type = FieldType.Keyword, name = "author_id")
     String authorId;
+
+    @Field(type = FieldType.Text, name = "author_name")
+    String authorName;
+
+    @Field(type = FieldType.Keyword, name = "author_avatar_path", index = false)
+    String authorAvatarPath;
 }

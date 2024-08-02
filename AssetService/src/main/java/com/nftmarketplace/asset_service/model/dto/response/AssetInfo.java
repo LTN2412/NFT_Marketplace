@@ -1,37 +1,26 @@
 package com.nftmarketplace.asset_service.model.dto.response;
 
+import java.util.Set;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AssetCardResponse {
+public class AssetInfo {
     String id;
     String name;
+    String description;
     String imgPath;
     Float price;
     Float highestBid;
     String authorId;
     String authorName;
     String authorAvatarPath;
+    Set<String> tags;
 }
-// public interface AssetCard {
-// String getId();
-
-// String getName();
-
-// String getImgPath();
-
-// String getPrice();
-
-// String getHighestBid();
-
-// String getAuthorId();
-
-// String getAuthorName();
-
-// String getAuthorAvatarPath();
-// }

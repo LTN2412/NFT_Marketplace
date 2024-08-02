@@ -1,8 +1,6 @@
-package com.nftmarketplace.asset_service.model.dto.request;
+package com.nftmarketplace.asset_elastic_search.model.dto.request;
 
 import java.util.Set;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,13 +14,14 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AssetRequest {
+public class AuthorRequest {
+    String id;
     String name;
-    String description;
-    Set<String> tags;
-    MultipartFile imgAsset;
-    Float price;
-    Float highestBid;
-    String imgPath;
-    String authorId;
+    String avatarPath;
+    String coverImgPath;
+    String bio;
+    Float volumne;
+    Long nftSolds;
+    Long followers;
+    Set<String> assetIds;
 }

@@ -30,11 +30,11 @@ public class FakerService {
             for (int i = 0; i < count; i++) {
                 AuthorRequest author = AuthorRequest.builder()
                         .name(faker.name().fullName() + String.valueOf(faker.random().nextInt(1, 100)))
-                        .avatarPath(faker.internet().image())
-                        .coverImgPath(faker.internet().image())
+                        // .avatarPath(faker.internet().image())
+                        // .coverImgPath(faker.internet().image())
                         .volumne((float) faker.number().randomDouble(2, 1000, 10000))
-                        .nftSolds((long) faker.number().randomNumber())
-                        .followers((long) faker.number().randomNumber())
+                        .nftSolds((int) faker.number().randomDigit())
+                        .followers((int) faker.number().randomDigit())
                         .bio(faker.lorem().paragraph())
                         .build();
                 Author saveAuthor = authorService.createAuthor(author);
@@ -49,7 +49,7 @@ public class FakerService {
                             .tags(tags)
                             .price((float) faker.number().randomDouble(2, 10, 1000))
                             .highestBid((float) faker.number().randomDouble(2, 10, 1000))
-                            .imgPath(faker.internet().image())
+                            // .imgPath(faker.internet().image())
                             .authorId(author_id)
                             .build();
                     assetService.createAsset(asset);

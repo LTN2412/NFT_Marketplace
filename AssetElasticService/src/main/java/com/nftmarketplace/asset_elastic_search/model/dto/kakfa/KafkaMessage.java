@@ -1,4 +1,4 @@
-package com.nftmarketplace.asset_elastic_search.dto.kakfa;
+package com.nftmarketplace.asset_elastic_search.model.dto.kakfa;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

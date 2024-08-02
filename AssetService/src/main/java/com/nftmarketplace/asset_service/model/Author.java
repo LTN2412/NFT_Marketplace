@@ -8,8 +8,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -29,7 +27,6 @@ import lombok.experimental.FieldDefaults;
 @JsonInclude(value = Include.NON_NULL)
 public class Author {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
     @Column(unique = true, nullable = false)

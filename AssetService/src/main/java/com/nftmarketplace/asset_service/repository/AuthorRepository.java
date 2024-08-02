@@ -11,10 +11,10 @@ import com.nftmarketplace.asset_service.model.Author;
 
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, String> {
-    @EntityGraph(attributePaths = "assets")
+    @EntityGraph(attributePaths = { "assets", "assets.tags" })
     List<Author> findAll();
 
-    @EntityGraph(attributePaths = "assets")
+    @EntityGraph(attributePaths = { "assets", "assets.tags" })
     Optional<Author> findById(String id);
 
     boolean existsByName(String name);

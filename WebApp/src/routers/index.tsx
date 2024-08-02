@@ -27,7 +27,7 @@ const router = createBrowserRouter([
   {
     path: "/author",
     element: <AuthorPage />,
-    children: [{ path: "/author/:id" }],
+    children: [{ path: "/author/:id", element: null }],
   },
   {
     path: "/ranking",

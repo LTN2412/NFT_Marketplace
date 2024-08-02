@@ -27,5 +27,4 @@ public class FakerController {
                 .message("Create fake data completed!")
                 .build();
     }
-
 }

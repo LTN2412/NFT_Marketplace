@@ -1,28 +1,25 @@
-package com.nftmarketplace.asset_service.model.dto.request;
+package com.nftmarketplace.asset_service.model.dto.response;
 
 import java.util.Set;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthorRequest {
+public class AuthorFlat {
+    String id;
     String name;
-    MultipartFile avatar;
-    MultipartFile coverImg;
+    String avatarPath;
+    String coverImgPath;
     String bio;
     Float volumne;
-    Integer nftSolds;
-    Integer followers;
-    Set<String> assets;
+    Long nftSolds;
+    Long followers;
+    Set<AssetFlat> assets;
 }

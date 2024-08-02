@@ -15,12 +15,11 @@ interface MyPagination {
   totalPage: number;
 }
 
-export default function MyPagination({ currentPage }: MyPagination) {
+export default function MyPagination({ currentPage, totalPage }: MyPagination) {
   const lessShowPage = 1;
   const moreShowPage = 5;
   const center = (moreShowPage - 1) / 2;
-  const showPage = lessShowPage + moreShowPage;
-  const totalPageMock = 30;
+  const showPage = 10;
   const location = useLocation().pathname;
 
   const additionalPagination = [];
@@ -45,8 +44,8 @@ export default function MyPagination({ currentPage }: MyPagination) {
           )}
         </PaginationItem>
 
-        {totalPageMock < showPage ? (
-          Array(totalPageMock)
+        {totalPage < showPage ? (
+          Array(totalPage)
             .fill(0)
             .map((_, index) => (
               <PaginationItem key={index}>
@@ -57,7 +56,7 @@ export default function MyPagination({ currentPage }: MyPagination) {
                 </Link>
               </PaginationItem>
             ))
-        ) : moreShowPage > totalPageMock - currentPage + 1 ? (
+        ) : moreShowPage > totalPage - currentPage + 1 ? (
           <>
             {Array(lessShowPage)
               .fill(0)
@@ -78,14 +77,14 @@ export default function MyPagination({ currentPage }: MyPagination) {
               .map((_, index) => (
                 <PaginationItem>
                   <Link
-                    to={`${location}?page=${totalPageMock - moreShowPage + index + 1}`}
+                    to={`${location}?page=${totalPage - moreShowPage + index + 1}`}
                   >
                     <PaginationLink
                       isActive={
-                        currentPage == totalPageMock - moreShowPage + index + 1
+                        currentPage == totalPage - moreShowPage + index + 1
                       }
                     >
-                      {totalPageMock - moreShowPage + index + 1}
+                      {totalPage - moreShowPage + index + 1}
                     </PaginationLink>
                   </Link>
                 </PaginationItem>
@@ -126,10 +125,10 @@ export default function MyPagination({ currentPage }: MyPagination) {
               .map((_, index) => (
                 <PaginationItem>
                   <Link
-                    to={`${location}?page=${totalPageMock - lessShowPage + index + 1}`}
+                    to={`${location}?page=${totalPage - lessShowPage + index + 1}`}
                   >
                     <PaginationLink>
-                      {totalPageMock - lessShowPage + index + 1}
+                      {totalPage - lessShowPage + index + 1}
                     </PaginationLink>
                   </Link>
                 </PaginationItem>
@@ -138,7 +137,7 @@ export default function MyPagination({ currentPage }: MyPagination) {
         )}
 
         <PaginationItem>
-          {currentPage != totalPageMock ? (
+          {currentPage != totalPage ? (
             <Link to={`${location}?page=${currentPage + 1}`}>
               <PaginationNext />
             </Link>

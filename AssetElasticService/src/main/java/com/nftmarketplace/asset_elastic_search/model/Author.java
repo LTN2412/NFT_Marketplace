@@ -8,36 +8,42 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Document(indexName = "author")
 public class Author {
-
     @Id
+    @Field(type = FieldType.Keyword)
     String id;
 
     @Field(type = FieldType.Text)
     String name;
 
-    @Field(type = FieldType.Text, name = "avatar_path")
+    @Field(type = FieldType.Keyword, name = "avatar_path", index = false)
     String avatarPath;
 
-    @Field(type = FieldType.Text, name = "cover_img_path")
+    @Field(type = FieldType.Keyword, name = "cover_img_path", index = false)
     String coverImgPath;
+
+    @Field(type = FieldType.Text)
+    String bio;
 
     @Field(type = FieldType.Float)
     Float volumne;
 
     @Field(type = FieldType.Integer, name = "nft_solds")
-    Long nftSolds;
+    Integer nftSolds;
 
     @Field(type = FieldType.Integer)
-    Long followers;
+    Integer followers;
 
-    @Field(type = FieldType.Keyword, name = "asset_ids")
+    @Field(type = FieldType.Keyword)
     Set<String> assetIds;
-
 }

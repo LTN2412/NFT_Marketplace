@@ -1,0 +1,320 @@
+GET _cluster/health
+
+GET _cat/nodes?v
+
+GET _cat/shards?v
+
+GET _cat/indices?v
+
+PUT new_index
+{
+  "settings": {
+    "number_of_shards": 10,
+    "number_of_replicas": 10
+  }
+}
+
+#Routing
+# shard = hash(routing) % number_of_primary_shards
+
+
+DELETE new_index
+
+GET new_index/_doc/1
+
+#Update
+POST new_index/_update/1
+{
+  "doc":{
+    "FIELD":"VALUE"
+  }
+}
+
+#Create or replace if exists
+POST new_index/_doc/1
+{
+  "FIELD":"VALUE"
+}
+
+#ctx._source 
+#ctx.op = "noop", "updated", "delete"
+
+POST new_index/_update/1
+{
+  "script": {
+    "source": "ctx._source.field += prams.quantity",
+    "params": {
+      "quantity":3
+    }
+  }
+}
+
+#If doc not exist it will create doc by upsert, or it will update by doc or script
+POST new_index/_update/1
+{
+  "script": {
+    "source": "ctx._source.age++"
+  }, 
+  "upsert": {
+    "name":"Le Nhat",
+    "age":"18"
+  }
+}
+
+#Optimistic concurrency
+POST new_index/_update/1?if_primary_term=X&if_seq_no=X
+{
+  "doc": {
+    "FIELD":"VALUE"
+  }
+}
+
+#If conflicts:"proceed" is set. The update query will continue although met conflict 
+POST new_index/_update_by_query
+{
+  "query": {
+    "match_all": {}
+  }  ,
+  "script": {
+    "source": "ctx._source.age=18",
+    "lang": "painless"  
+  },
+  "conflicts": "proceed"
+}
+
+POST new_index/_delete_by_query
+{
+  "query":{
+    "match_all":{}
+  }
+}
+
+POST /_bulk
+{"index":{"_index":"new_index","_id":"1"}}
+{"FIELD1":"VALUE1","FIELD2":"VALUE2"}
+
+POST /_bulk
+{"create":{"_index":"new_index","_id":"2"}}
+{"FIELD1":"VALUE1","FIELD2":"VALUE2"}
+
+POST /new_index/_bulk
+{"update":{"_id":1}}
+{"doc":{"FIELD1":"VALUE1"}}
+
+POST /new_index/_bulk
+{"delete":{"_id":1}}
+
+#Analysis
+Character filters
+Tokenizer
+Token filter
+
+#Inverted indices
+POST /_analyze
+{
+  "text":"XIN chao VIET nam! 2412",
+  "char_filter":[],
+  "tokenizer":"standard",
+  "filter":["lowercase"]
+}
+
+#Create explicit mappings
+PUT new_index
+{
+  "mappings":{
+    "properties":{
+      "FIELD1":{"type": "text"}, 
+      "FIELD2":{"type": "text"},
+      "FIELD3":{
+        "properties":{
+          "CHILDFIELD1":{"type": "text"},
+          "CHILDFIELD2":{"type": "text"}
+        }
+      }
+    }
+  }
+}
+
+PUT new_index
+{
+  "mappings":{
+    "properties":{
+      "FIELD1":{"type": "text"}, 
+      "FIELD2":{"type": "text"},
+      "FIELD3.CHILDFIELD1":{"type": "text"},
+      "FIELD3.CHILDFIELD2":{"type": "text"},
+    }
+  }
+}
+
+GET new_index/_mapping
+
+#Mapping properties
+
+#format
+{"type":"date","format":"dd/MM/yyyy"}
+
+#coerce
+{"type":"date","coerce":false} 
+#or
+{"setting":{
+  "index.mapping.coerce":false
+}}
+
+#doc_values, norms, index, null_value, copy_to
+
+
+#We can't change mapping when we already create it
+#Reindex
+POST /_reindex
+{
+  "source": {
+    "index": "new_index",
+    "query": {}
+  },
+  "dest": {
+    "index": "new_index1"
+  }
+}
+
+#Remove field
+POST /_reindex
+{
+  "source": {
+    "index": "new_index",
+    "query": {}
+  },
+  "dest": {
+    "index": "new_index1"
+  }
+}
+
+#Change field's name
+# Rename "content" field to "comment"
+POST /_reindex
+{
+  "source": {
+    "index": "reviews"
+  },
+  "dest": {
+    "index": "reviews_new"
+  },
+  "script": {
+    "source": """     
+      ctx._source.comment = ctx._source.remove("content");
+    """
+  }
+}
+#Can change name by alias too
+{
+  "properties":{
+    "comment":{"type":"alias","path":"content"}
+  }
+}
+
+#MMulti-field mappings
+POST /new_index
+{
+  "mapping":{
+    "properties":{
+      "FIELD1":{
+        "type":"text",
+        "fields":{
+          "keyword":{        //Can any name but should be the same with type
+            "type":"keyword"
+          }
+        }
+      }
+    }
+  }
+}
+
+#Index template
+PUT /_index_template/new_template
+{
+  "index_patterns": ["new_template-*"],
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "index.mapping.coerce": false
+    },
+    "mappings": {
+      "properties": {
+        "@timestamp": { "type": "date" },
+        "url.original": { "type": "wildcard" },       
+      }
+    }
+  }
+}
+
+#Dynamic mapping
+
+#Match full text
+GET new_index/_search
+{
+  "query": {
+    "match": {
+      "FIELD": {
+        "query": "VALUE VALUE",
+        "operator": "and"  //Default or    
+      }
+    }
+  }
+}
+
+#Multimatch
+GET new_index/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "VALUE",
+      "fields": ["FIELD1","FIELD2"],
+      "tie_breaker": 0.5,  //Highest score plus elevant field multiply with tie_breaker 
+      "operator": "and"  //Default or      
+    }
+  }
+}
+
+#Boosting  //compound query
+GET new_index/_search
+{
+  "query": {
+    "boosting": {
+      "negative": {
+        "match": {
+          "FIELD": "TEXT"
+        }
+      },
+      "positive": {
+        "match": {
+          "FIELD": "TEXT"
+        }
+      },
+      "negative_boost": 0.2  //If match positive score will mutilply with negative_boost
+    }
+  }
+}
+
+#Change format to yaml
+GET new_index/_search?format=yaml
+
+#Pretty
+GET new_index/_search?pretty
+
+#Select 
+{
+  "_source":{
+    "includes":[],
+    "excludes":[]
+  }
+}
+
+{
+  "_source":[]
+}
+
+#Offset and limit
+{
+  "from":1, //offset
+  "size":1  //limit
+}

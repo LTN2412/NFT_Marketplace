@@ -1,4 +1,4 @@
-package com.nftmarketplace.asset_elastic_search.dto;
+package com.nftmarketplace.asset_elastic_search.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -19,6 +19,10 @@ import lombok.experimental.FieldDefaults;
 public class APIResponse<T> {
     @Builder.Default
     int code = 100;
+    @Builder.Default
+    Long totalElement = null;
+    @Builder.Default
+    Integer totalPage = null;
     String message;
     T result;
 }
