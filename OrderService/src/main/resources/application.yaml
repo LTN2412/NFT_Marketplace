@@ -1,9 +1,15 @@
-server:
-  port: 8085
 spring:
   application:
     name: Order Service
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+  data:
+    mongodb:
+      uri: mongodb+srv://ltn2412:<password>@cluster1.vsmjygc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1
+      database: Cluster1
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: group-order
+      auto-offset-reset: earliest
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  #     properties:
+  #       spring.json.trusted.packages: com.nftmarketplace.user_service.model.kafkaModel

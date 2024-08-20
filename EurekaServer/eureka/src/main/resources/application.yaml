@@ -3,7 +3,9 @@ server:
 spring:
   application:
     name: Eureka Server
-
+  output:
+    ansi:
+      enabled: always
 eureka:
   client:
     register-with-eureka: false

@@ -86,9 +86,9 @@ public class AssetController {
                 .build();
     }
 
-    @KafkaListener(topics = "asset", groupId = "group-assets")
-    public Void consumerAsset(KafkaMessage<AssetRequest> message) {
-        assetService.consumerAsset(message);
-        return null;
-    }
+    // @KafkaListener(topics = "asset", groupId = "group-assets")
+    // public Void consumerAsset(KafkaMessage<AssetRequest> message) {
+    // assetService.consumerAsset(message);
+    // return null;
+    // }
 }

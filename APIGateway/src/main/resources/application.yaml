@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: API Gateway
+  output:
+    ansi:
+      enabled: always
   cloud:
     gateway:
       routes:

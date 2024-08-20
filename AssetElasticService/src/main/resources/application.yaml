@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: Asset Elastic Service
+  output:
+    ansi:
+      enabled: always
   kafka:
     consumer:
       auto-offset-reset: earliest

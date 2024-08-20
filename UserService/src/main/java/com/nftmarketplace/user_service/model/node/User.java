@@ -1,30 +1,27 @@
-package com.nftmarketplace.user_service.model;
+package com.nftmarketplace.user_service.model.node;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
-import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+@Node("user")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Node("user")
 public class User {
-
     @Id
-    @GeneratedValue(generatorClass = UUIDStringGenerator.class)
     String id;
 
     @Property("first_name")
@@ -60,4 +57,12 @@ public class User {
     @Property
     String username;
 
+    @Relationship(type = "IS_FRIEND", direction = Relationship.Direction.OUTGOING)
+    Set<User> friends = new HashSet<>();
+
+    @Relationship(type = "IS_FOLLOWER", direction = Relationship.Direction.OUTGOING)
+    Set<User> followers = new HashSet<>();
+
+    @Relationship(type = "HAS_IN_CART", direction = Relationship.Direction.OUTGOING)
+    Set<Asset> assets = new HashSet<>();
 }

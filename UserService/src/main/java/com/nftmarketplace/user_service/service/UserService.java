@@ -1,57 +1,42 @@
 package com.nftmarketplace.user_service.service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
-import org.springframework.stereotype.Service;
-
-import com.nftmarketplace.user_service.model.User;
 import com.nftmarketplace.user_service.model.dto.request.UserRequest;
-import com.nftmarketplace.user_service.repository.UserRepository;
-import com.nftmarketplace.user_service.utils.mapper.UserMapper;
+import com.nftmarketplace.user_service.model.dto.response.UserFlat;
+import com.nftmarketplace.user_service.model.enums.FriendStatus;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-@Service
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class UserService {
-    UserRepository userRepository;
+public interface UserService {
+    Mono<UserFlat> createUser(UserRequest request);
 
-    public User createUser(UserRequest request) {
-        if (userRepository.existsByUsername(request.getUsername()))
-            throw new RuntimeException();
-        User user = UserMapper.INSTANCE.toUser(request);
-        user.setCreatedAt(new Date());
-        user.setUpdatedAt(new Date());
-        user.setLastLogin(new Date());
-        return userRepository.save(user);
-    }
+    Mono<UserFlat> getUser(String id);
 
-    public User getUser(String id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException());
-        return user;
-    }
+    Flux<UserFlat> getAllUsers();
 
-    public List<User> getAllUsers() {
-        List<User> allUsers = userRepository.findAll();
-        return allUsers;
-    }
+    Mono<UserFlat> updateUser(String id, UserRequest request);
 
-    public User updateUser(String id, UserRequest request) {
-        User user = UserMapper.INSTANCE.toUSer(request,
-                userRepository.findById(id).orElseThrow(() -> new RuntimeException()));
-        user.setUpdatedAt(new Date());
-        return userRepository.save(user);
-    }
+    Mono<String> deleteUser(String id);
 
-    public Void deleteUser(String id) {
-        if (!userRepository.existsById(id))
-            throw new RuntimeException();
-        userRepository.deleteById(id);
-        return null;
-    }
+    Mono<String> checkFriendStatus(String userId1, String userId2);
 
+    Mono<String> sendFriendRequest(String userId1, String userId2);
+
+    Mono<String> handleFriendRequest(String userId1, String userId2, FriendStatus status);
+
+    Mono<String> unFriend(String userId1, String userId2);
+
+    Mono<Set<String>> getAllFriends(String userId);
+
+    Mono<Boolean> checkFollowerStatus(String userId1, String userId2);
+
+    Mono<String> addFollower(String idUsers1, String userId2);
+
+    Mono<String> unFollower(String userId1, String userId2);
+
+    Mono<Set<String>> getAllFollowers(String userId);
+
+    Mono<Void> checkExistUsers(String... userIds);
 }

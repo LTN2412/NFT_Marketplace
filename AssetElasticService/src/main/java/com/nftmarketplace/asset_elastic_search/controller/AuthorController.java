@@ -46,9 +46,9 @@ public class AuthorController {
                 .build();
     }
 
-    @KafkaListener(topics = "author", groupId = "group-authors")
-    public Void consumerAuthor(KafkaMessage<AuthorRequest> message) {
-        authorService.consumerAuthor(message);
-        return null;
-    }
+    // @KafkaListener(topics = "author", groupId = "group-authors")
+    // public Void consumerAuthor(KafkaMessage<AuthorRequest> message) {
+    //     authorService.consumerAuthor(message);
+    //     return null;
+    // }
 }

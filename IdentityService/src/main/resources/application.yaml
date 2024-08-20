@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: Identity Service
+  output:
+    ansi:
+      enabled: always
   datasource:
     url: "jdbc:mysql://localhost:3306/test"
     username: root

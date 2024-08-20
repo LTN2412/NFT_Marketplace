@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: Aspect Service
+  output:
+    ansi:
+      enabled: always

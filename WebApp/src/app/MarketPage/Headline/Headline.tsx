@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input";
 import SearchIcon from "@/assets/Search.svg?react";
 import { useEffect, useState } from "react";
 import { FetchSearchAssets } from "@/apis/apis";
+import _ from "lodash";
 import { Asset } from "@/types/Asset.type";
 export default function HeadLine() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,6 +11,7 @@ export default function HeadLine() {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
+  const debounceSearchAssets = _.debounce(FetchSearchAssets, 500);
   useEffect(() => {
     const fetchData = async () => {
       if (searchTerm.trim() != "") {
