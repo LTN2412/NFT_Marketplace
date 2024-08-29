@@ -1,9 +1,11 @@
 import { Input } from "@/components/ui/input";
 import SearchIcon from "@/assets/Search.svg?react";
 import { useEffect, useState } from "react";
-import { FetchSearchAssets } from "@/apis/apis";
+
 import _ from "lodash";
 import { Asset } from "@/types/Asset.type";
+import { FetchSearchAssetsAPI } from "@/apis/query/AssetAPI";
+
 export default function HeadLine() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResult, setSearchResult] = useState<Asset[]>();
@@ -11,21 +13,22 @@ export default function HeadLine() {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
-  const debounceSearchAssets = _.debounce(FetchSearchAssets, 500);
+  const debounceSearchAssets = _.debounce(FetchSearchAssetsAPI, 500);
   useEffect(() => {
     const fetchData = async () => {
       if (searchTerm.trim() != "") {
-        setSearchResult((await FetchSearchAssets(searchTerm, 5)).data.result);
+        setSearchResult(
+          (await FetchSearchAssetsAPI(searchTerm, 5)).data.result,
+        );
       }
     };
     fetchData();
   }, [searchTerm]);
-  console.log(searchResult);
   return (
     <h1 className="gap-4 py-12">
       <b>Browse marketplace</b>
       <p className="text-xl font-medium">
-        Browse through more than 50k NFTs on the NFT Marketplace.
+        Browse through more than 50k NFTs on the NFT Marketplace
       </p>
       <form className="rounded-2xl ">
         <Input

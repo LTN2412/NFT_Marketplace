@@ -1,10 +1,16 @@
+import { useQuery } from "@tanstack/react-query";
+import { Link, useLocation } from "react-router-dom";
+
+import { CountAllAssets } from "@/apis/query-options/AssetQuery";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ListCards from "../ListCards/ListCards";
-import { Link, useLocation } from "react-router-dom";
 
 export default function TabBar() {
   const location = useLocation();
   const currentTab = location.pathname.split("/").pop();
+  const { data } = useQuery(CountAllAssets());
+  const numberAssets = data?.data.result;
   return (
     <div>
       <Tabs
@@ -22,9 +28,11 @@ export default function TabBar() {
               className="flex w-full items-center justify-center gap-4 sm:pr-4"
             >
               NFTs
-              <div className="h-6 w-14 rounded-3xl bg-lightGray font-light text-black max-sm:hidden">
-                321
-              </div>
+              {numberAssets && (
+                <div className="h-6 w-14 rounded-3xl bg-lightGray font-light text-black max-sm:hidden">
+                  {numberAssets}
+                </div>
+              )}
             </Link>
           </TabsTrigger>
           <TabsTrigger
@@ -36,9 +44,11 @@ export default function TabBar() {
               className="flex w-full items-center justify-center gap-4 sm:pr-4"
             >
               Collections
-              <div className="h-6 w-14 rounded-3xl bg-lightGray font-light text-black max-sm:hidden">
-                123
-              </div>
+              {numberAssets && (
+                <div className="h-6 w-14 rounded-3xl bg-lightGray font-light text-black max-sm:hidden">
+                  {numberAssets}
+                </div>
+              )}
             </Link>
           </TabsTrigger>
         </TabsList>

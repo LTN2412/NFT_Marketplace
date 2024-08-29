@@ -61,7 +61,7 @@ export default function NavMenu() {
           Connect a wallet
         </Link>
         <Link to={"/signup"}>
-          <Button className="cursor-pointer gap-2 rounded-xl bg-button hover:bg-button hover:opacity-80">
+          <Button className="cursor-pointer gap-2 rounded-xl bg-purple hover:bg-purple hover:opacity-80">
             <UserIcon className="w-5 fill-current text-foreground" />
             <p>Sign Up</p>
           </Button>

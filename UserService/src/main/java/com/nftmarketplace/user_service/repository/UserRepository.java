@@ -65,7 +65,7 @@ public interface UserRepository extends ReactiveNeo4jRepository<User, String> {
                         "MERGE (u1)-[r:IS_FOLLOWER]->(u2)\n")
         Mono<Void> addFollower(String userId1, String userId2);
 
-        @Query("MATCH (:user{id:$userId1})-[r:IS_FOLLOWER]->(:user{id:$userId2})\n" +
+        @Query("MATCH (:user {id:$userId1})-[r:IS_FOLLOWER]->(:user {id:$userId2})\n" +
                         "DELETE r")
         Mono<Void> unFollower(String userId1, String userId2);
 }

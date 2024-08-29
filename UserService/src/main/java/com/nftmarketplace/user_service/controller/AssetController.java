@@ -15,46 +15,69 @@ import lombok.experimental.FieldDefaults;
 import reactor.core.publisher.Mono;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping("/asset")
+@RequestMapping("/user/asset")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AssetController {
-    AssetService assetService;
+        AssetService assetService;
 
-    @PostMapping
-    public Mono<APIResponse<?>> addAsset(@RequestBody AssetRequest request) {
-        return assetService.addAsset(request).flatMap(message -> {
-            return Mono.just(APIResponse
-                    .builder()
-                    .message(message)
-                    .build());
-        });
-    }
+        @GetMapping
+        public Mono<APIResponse<Set<Asset>>> getAllAssetsInCartFrom1User(@RequestParam String userId) {
+                return assetService.getAllAssetsInCartFrom1User(userId)
+                                .collect(Collectors.toSet())
+                                .map(assets -> APIResponse.<Set<Asset>>builder()
+                                                .result(assets)
+                                                .build());
+        }
 
-    @GetMapping()
-    public Mono<APIResponse<Set<Asset>>> getMethodName(@RequestParam String userId) {
-        return assetService.getAssetsFrom1User(userId).flatMap(assets -> {
-            return Mono.just(APIResponse
-                    .<Set<Asset>>builder()
-                    .result(assets)
-                    .build());
-        });
-    }
+        @GetMapping("/select")
+        public Mono<APIResponse<Set<Asset>>> getAllAssetsIsSelectInCartFrom1User(@RequestParam String userId) {
+                return assetService.getAllAssetsIsSelectInCartFrom1User(userId)
+                                .collect(Collectors.toSet())
+                                .map(assets -> APIResponse.<Set<Asset>>builder()
+                                                .result(assets)
+                                                .build());
+        }
 
-    @DeleteMapping
-    public Mono<APIResponse<?>> removeAsset(@RequestParam String userId, @RequestParam String assetId) {
-        return assetService.removeAsset(userId, assetId).flatMap(message -> {
-            return Mono.just(APIResponse
-                    .builder()
-                    .message(message)
-                    .build());
-        });
-    }
+        @PostMapping
+        public Mono<APIResponse<?>> addAsset(@RequestBody AssetRequest request) {
+                return assetService.addAsset(request)
+                                .map(message -> APIResponse
+                                                .builder()
+                                                .message(message)
+                                                .build());
+        }
+
+        @PostMapping("/select")
+        public Mono<APIResponse<?>> selectAssetInCart(@RequestParam String userId, String assetId, Boolean isSelect) {
+                return assetService.selectAssetInCart(userId, assetId, isSelect)
+                                .map(message -> APIResponse
+                                                .builder()
+                                                .message(message)
+                                                .build());
+        }
+
+        @DeleteMapping
+        public Mono<APIResponse<?>> removeAsset(@RequestParam String userId, String assetId) {
+                return assetService.removeAsset(userId, assetId)
+                                .map(message -> APIResponse
+                                                .builder()
+                                                .message(message)
+                                                .build());
+        };
+
+        @PostMapping("/order")
+        public String postMethodName(@RequestBody String entity) {
+                return entity;
+        }
 }

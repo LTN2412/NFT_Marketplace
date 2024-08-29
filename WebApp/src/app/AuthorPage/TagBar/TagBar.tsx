@@ -1,6 +1,6 @@
 import ListCards from "@/components/ListCards/ListCards";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GetAllAssetDetailFrom1Author } from "@/utils/ReactQuery";
+import { GetAllAssetDetailFrom1Author } from "@/apis/query-options/AssetQuery";
 import React, { HTMLAttributes } from "react";
 
 export interface TagBarProps extends HTMLAttributes<HTMLDivElement> {

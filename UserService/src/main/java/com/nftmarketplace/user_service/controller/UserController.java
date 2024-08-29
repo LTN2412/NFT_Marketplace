@@ -2,8 +2,6 @@ package com.nftmarketplace.user_service.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
-import com.nftmarketplace.user_service.event.EventProducer;
 import com.nftmarketplace.user_service.model.dto.APIResponse;
 import com.nftmarketplace.user_service.model.dto.request.UserRequest;
 import com.nftmarketplace.user_service.model.dto.response.UserFlat;
@@ -26,6 +24,7 @@ import java.util.Set;
 
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -36,129 +35,127 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
         UserService userService;
-        EventProducer eventProducer;
-
-        Gson gson = new Gson();
 
         @PostMapping
         public Mono<APIResponse<UserFlat>> createUser(@Valid @ModelAttribute UserRequest request) {
                 return userService.createUser(request)
-                                .flatMap(user -> Mono.just(APIResponse
+                                .map(user -> APIResponse
                                                 .<UserFlat>builder()
                                                 .result(user)
-                                                .build()));
+                                                .build());
         }
 
         @GetMapping
         // @PreAuthorize("hasAuthority('SCOPE_USER')")
-        public Mono<APIResponse<UserFlat>> getUser(@RequestParam String id) {
-                return userService.getUser(id)
-                                .flatMap(user -> Mono.just(APIResponse
+        public Mono<APIResponse<UserFlat>> getUser(@RequestParam String userId) {
+                return userService.getUser(userId)
+                                .map(user -> APIResponse
                                                 .<UserFlat>builder()
                                                 .result(user)
-                                                .build()))
-                                .doOnSuccess(user -> eventProducer.send("order", gson.toJson(user.getResult()))
-                                                .subscribe());
+                                                .build());
         }
 
         @GetMapping(path = "/all", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
         public Flux<APIResponse<UserFlat>> findAllUsers() {
                 return userService.getAllUsers()
-                                .flatMap(user -> Mono.just(APIResponse
+                                .map(user -> APIResponse
                                                 .<UserFlat>builder()
                                                 .result(user)
-                                                .build()));
+                                                .build());
         }
 
         @PutMapping
-        public Mono<APIResponse<UserFlat>> updateUser(@RequestParam String id, @RequestBody UserRequest request) {
-                return userService.updateUser(id, request)
-                                .flatMap(user -> Mono.just(APIResponse
+        public Mono<APIResponse<UserFlat>> updateUser(@RequestParam String userId, @RequestBody UserRequest request) {
+                return userService.updateUser(userId, request)
+                                .map(user -> APIResponse
                                                 .<UserFlat>builder()
                                                 .result(user)
-                                                .build()));
+                                                .build());
         }
 
         @DeleteMapping
-        public Mono<APIResponse<?>> deleteUser(@RequestParam String id) {
-                return userService.deleteUser(id)
-                                .flatMap(message -> Mono.just(APIResponse
+        public Mono<APIResponse<?>> deleteUser(@RequestParam String userId) {
+                return userService.deleteUser(userId)
+                                .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
-                                                .build()));
+                                                .build());
         }
 
         @PostMapping("/friendRequest")
-        public Mono<APIResponse<?>> sendFriendRequest(@RequestParam String userId1, String userId2) {
-                return userService.sendFriendRequest(userId1, userId2)
-                                .flatMap(message -> Mono.just(APIResponse
+        public Mono<APIResponse<?>> sendFriendRequest(@RequestParam String userRequestId, String userReceiveId) {
+                return userService.sendFriendRequest(userRequestId, userReceiveId)
+                                .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
-                                                .build()));
+                                                .build());
         }
 
         @PostMapping("/acceptFriend")
-        public Mono<APIResponse<?>> addFriend(@RequestParam String userId1, String userId2) {
-                return userService.handleFriendRequest(userId1, userId2, FriendStatus.ACCEPTED)
-                                .flatMap(message -> Mono.just(APIResponse
+        public Mono<APIResponse<?>> addFriend(@RequestParam String messageId, String userRequestId,
+                        String userReceiveId) {
+                return userService.handleFriendRequest(messageId, userRequestId, userReceiveId, FriendStatus.ACCEPTED)
+                                .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
-                                                .build()));
+                                                .build());
         }
 
         @PostMapping("/rejectFriend")
-        public Mono<APIResponse<?>> rejectFriend(@RequestParam String userId1, String userId2) {
-                return userService.handleFriendRequest(userId1, userId2, FriendStatus.REJECTED)
-                                .flatMap(message -> Mono.just(APIResponse
+        public Mono<APIResponse<?>> rejectFriend(@RequestParam String messageId, String userRequestId,
+                        String userReceiveId) {
+                return userService.handleFriendRequest(messageId, userRequestId, userReceiveId, FriendStatus.REJECTED)
+                                .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
-                                                .build()));
+                                                .build());
         }
 
         @GetMapping("/friends")
         public Mono<APIResponse<Set<String>>> getAllFriends(@RequestParam String userId) {
                 return userService.getAllFriends(userId)
-                                .flatMap(userIds -> Mono.just(APIResponse
+                                .map(userIds -> APIResponse
                                                 .<Set<String>>builder()
                                                 .result(userIds)
-                                                .build()));
+                                                .build());
         }
 
         @DeleteMapping("/unFriend")
-        public Mono<APIResponse<?>> unFriend(@RequestParam String userId1, String userId2) {
-                return userService.unFriend(userId1, userId2)
-                                .flatMap(message -> Mono.just(APIResponse
+        public Mono<APIResponse<?>> unFriend(@RequestParam String userRequestId, String userReceiveId) {
+                return userService.unFriend(userRequestId, userReceiveId)
+                                .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
-                                                .build()));
+                                                .build());
         }
 
         @PostMapping("/addFollower")
-        public Mono<APIResponse<?>> addFollower(@RequestParam String userId1, String userId2) {
-                return userService.addFollower(userId1, userId2)
-                                .flatMap(message -> Mono.just(APIResponse
+        public Mono<APIResponse<?>> addFollower(@RequestParam String userRequestId, String userReceiveId) {
+                return userService.addFollower(userRequestId, userReceiveId)
+                                .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
-                                                .build()));
+                                                .build());
         }
 
         @GetMapping("/followers")
         public Mono<APIResponse<Set<String>>> getAllFollowers(@RequestParam String userId) {
                 return userService.getAllFollowers(userId)
-                                .flatMap(userIds -> Mono.just(APIResponse
+                                .map(userIds -> APIResponse
                                                 .<Set<String>>builder()
                                                 .result(userIds)
-                                                .build()));
+                                                .build());
         }
 
         @DeleteMapping("/unFollower")
-        public Mono<APIResponse<?>> unFollower(@RequestParam String userId1, String userId2) {
-                return userService.unFollower(userId1, userId2)
-                                .flatMap(message -> Mono.just(APIResponse
+        public Mono<APIResponse<?>> unFollower(@RequestParam String userRequestId, String userReceiveId) {
+                return userService.unFollower(userRequestId, userReceiveId)
+                                .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
-                                                .build()));
+                                                .build());
         }
 }

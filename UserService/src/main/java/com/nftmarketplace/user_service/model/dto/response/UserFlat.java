@@ -17,18 +17,32 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserFlat {
     String id;
+
     String firstName;
+
     String lastName;
+
     String gender;
+
     String email;
+
     String address;
+
     String phoneNumber;
+
     String avatarPath;
+
     Date createdAt;
+
     Date updatedAt;
+
     Date lastLogin;
+
     String username;
+
     Set<String> friendIds;
+
     Set<String> followerIds;
+
     Set<String> assetIds;
 }

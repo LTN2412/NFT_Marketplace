@@ -11,11 +11,11 @@ export default function CollectionCard() {
       : setNumberCollections(1),
   );
   return (
-    <div className="flex w-full flex-col items-center justify-between gap-12 lg:flex-row">
+    <ul className="flex w-full flex-col items-center justify-between gap-12 lg:flex-row">
       {Array(numberCollections)
         .fill(null)
-        .map(() => (
-          <div className="flex flex-col items-center gap-4">
+        .map((_, index) => (
+          <li className="flex flex-col items-center gap-4" key={index}>
             <div className="aspect-square w-full rounded-2xl bg-button lg:min-w-[330px]"></div>
             <div className="flex w-full justify-between gap-4">
               <div className="aspect-square w-1/3 min-w-[100px] rounded-2xl bg-button"></div>
@@ -31,8 +31,8 @@ export default function CollectionCard() {
                 <p>NAME</p>
               </div>
             </div>
-          </div>
+          </li>
         ))}
-    </div>
+    </ul>
   );
 }

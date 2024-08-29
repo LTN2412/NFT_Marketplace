@@ -81,6 +81,13 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      gridTemplateColumns: {
+        // Simple 16 column grid
+        16: "repeat(16, minmax(1fr))",
+
+        // Complex site-specific column configuration
+        footer: "200px minmax(900px, 1fr) 100px",
+      },
     },
   },
   // eslint-disable-next-line no-undef

@@ -5,7 +5,7 @@ import Card from "../Card/Card";
 import {
   GetAllAssetDetailFrom1AuthorType,
   GetAllAssetsByTagType,
-} from "@/utils/ReactQuery";
+} from "@/apis/query-options/AssetQuery";
 import { useQuery } from "@tanstack/react-query";
 import SkeletonListCards from "@/app/MarketPage/ListCards/SkeletonListCards/SkeletonListCards";
 import ErrorPage from "@/app/ErrorPage/ErrorPage";

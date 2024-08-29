@@ -1,3 +1,5 @@
+import { APIResponse } from "./APIResponse.type";
+
 export interface Asset {
   id: string;
   name: string;
@@ -12,14 +14,14 @@ export interface Asset {
   tags: string[];
 }
 
-export type AssetCardsResponse = {
-  code: number;
-  totalElement: number;
-  totalPage: number;
+export type AssetCardsResponse = APIResponse & {
   result: Asset[];
 };
 
-export type AssetDetailResponse = {
-  code: number;
+export type AssetDetailResponse = APIResponse & {
   result: Asset;
+};
+
+export type CountAssetsResponse = APIResponse & {
+  result: number;
 };

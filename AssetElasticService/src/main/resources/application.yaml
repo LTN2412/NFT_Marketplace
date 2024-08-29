@@ -6,17 +6,5 @@ spring:
   output:
     ansi:
       enabled: always
-  kafka:
-    consumer:
-      auto-offset-reset: earliest
-      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
   elasticsearch:
     uris: http://localhost:9200
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6379
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/

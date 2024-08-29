@@ -21,7 +21,8 @@ public enum ErrorCode {
     TOKEN_EXPIRED(107, "Token has expired!", HttpStatus.UNAUTHORIZED),
     INCORRECT_USERNAME_OR_PWD(108, "Incorrect username or password!", HttpStatus.UNAUTHORIZED),
     UNAUTHENTICATED(109, "Unauthenticated!", HttpStatus.UNAUTHORIZED),
-    UNAUTHORIZED(110, "Not have permission!", HttpStatus.FORBIDDEN);
+    UNAUTHORIZED(110, "Not have permission!", HttpStatus.FORBIDDEN),
+    NOT_REQUEST_FRIEND(111, "Friend status not waiting to handle!", HttpStatus.FORBIDDEN);
 
     int code;
     String message;

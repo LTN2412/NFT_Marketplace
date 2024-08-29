@@ -12,29 +12,29 @@ import reactor.core.publisher.Mono;
 public interface UserService {
     Mono<UserFlat> createUser(UserRequest request);
 
-    Mono<UserFlat> getUser(String id);
+    Mono<UserFlat> getUser(String userId);
 
     Flux<UserFlat> getAllUsers();
 
-    Mono<UserFlat> updateUser(String id, UserRequest request);
+    Mono<UserFlat> updateUser(String userId, UserRequest request);
 
-    Mono<String> deleteUser(String id);
+    Mono<String> deleteUser(String userId);
 
-    Mono<String> checkFriendStatus(String userId1, String userId2);
+    Mono<String> checkFriendStatus(String userRequestId, String userReceiveId);
 
-    Mono<String> sendFriendRequest(String userId1, String userId2);
+    Mono<String> sendFriendRequest(String userRequestId, String userReceiveId);
 
-    Mono<String> handleFriendRequest(String userId1, String userId2, FriendStatus status);
+    Mono<String> handleFriendRequest(String messageId, String userRequestId, String userReceiveId, FriendStatus status);
 
-    Mono<String> unFriend(String userId1, String userId2);
+    Mono<String> unFriend(String userRequestId, String userReceiveId);
 
     Mono<Set<String>> getAllFriends(String userId);
 
-    Mono<Boolean> checkFollowerStatus(String userId1, String userId2);
+    Mono<Boolean> checkFollowerStatus(String userRequestId, String userReceiveId);
 
-    Mono<String> addFollower(String idUsers1, String userId2);
+    Mono<String> addFollower(String idUsers1, String userReceiveId);
 
-    Mono<String> unFollower(String userId1, String userId2);
+    Mono<String> unFollower(String userRequestId, String userReceiveId);
 
     Mono<Set<String>> getAllFollowers(String userId);
 

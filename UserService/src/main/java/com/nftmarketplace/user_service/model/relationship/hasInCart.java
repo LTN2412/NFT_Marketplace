@@ -2,6 +2,7 @@ package com.nftmarketplace.user_service.model.relationship;
 
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
 import org.springframework.data.neo4j.core.schema.TargetNode;
 
@@ -22,6 +23,9 @@ public class hasInCart {
     @Id
     @GeneratedValue
     String id;
+
+    @Property("is_select")
+    Boolean isSelect;
 
     @TargetNode
     User user;

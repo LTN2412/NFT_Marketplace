@@ -13,7 +13,7 @@ import FirstCharName from "@/utils/FirstCharName";
 import LoadingPage from "@/app/LoadingPage/LoadingPage";
 import ErrorPage from "@/app/ErrorPage/ErrorPage";
 import { useQuery } from "@tanstack/react-query";
-import { GetAuthorDetail } from "@/utils/ReactQuery";
+import { GetAuthorDetail } from "@/apis/query-options/AuthorQuery";
 
 export interface AuthorProps extends HTMLAttributes<HTMLDivElement> {
   id: string;
@@ -44,7 +44,7 @@ const Author = React.forwardRef<HTMLDivElement, AuthorProps>(
             <PlusIcon className="w-6 fill-purple" />
             Follow
           </Button>
-          <div className="flex justify-between ">
+          <div className="flex justify-between text-center">
             <div>
               <div className="text-2xl font-bold">{author.volumne}</div>
               <p className="font-mono text-xl">Volumne</p>

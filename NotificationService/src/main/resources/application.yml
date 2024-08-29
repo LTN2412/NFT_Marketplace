@@ -1,0 +1,12 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: Notification Service
+  output:
+    ansi:
+      enabled: always
+  data:
+    mongodb:
+      uri: mongodb+srv://ltn2412:nhatprola1@cluster1.vsmjygc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1
+      database: Cluster1

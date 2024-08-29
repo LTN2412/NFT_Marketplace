@@ -2,6 +2,7 @@ import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
 import HeadLine from "./HeadLine/HeadLine";
 import TabBar from "./TabBar/TabBar";
+import CartCircle from "@/components/CartCircle/CartCircle";
 // import { useEffect } from "react";
 // import { fetchAssets } from "@/redux/AssetSlice";
 // import { useAppDispatch } from "@/store";
@@ -13,6 +14,7 @@ export default function MarketPage() {
   // }, [dispatch]);
   return (
     <div>
+      <CartCircle userId={"91d313d7-6e4a-4164-a846-80379b994794"} />
       <Navbar />
       <HeadLine />
       <TabBar />

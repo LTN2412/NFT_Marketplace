@@ -6,6 +6,9 @@ export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   StartIcon?: React.ReactNode;
   EndIcon?: React.ReactNode;
+  isPassword?: boolean;
+  iconPasswordOn?: boolean;
+  iconPasswordOff?: boolean;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -20,7 +23,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           className={cn(
-            "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground disabled:cursor-not-allowed disabled:opacity-50",
+            // focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground
+            "flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50",
             className,
           )}
           ref={ref}

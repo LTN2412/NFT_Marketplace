@@ -1,16 +1,20 @@
 package com.nftmarketplace.user_service.service.impl;
 
-import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
+import com.nftmarketplace.user_service.event.producer.EventProducer;
 import com.nftmarketplace.user_service.exception.AppException;
 import com.nftmarketplace.user_service.exception.ErrorCode;
 import com.nftmarketplace.user_service.model.dto.request.UserRequest;
 import com.nftmarketplace.user_service.model.dto.response.UserFlat;
 import com.nftmarketplace.user_service.model.enums.FriendStatus;
+import com.nftmarketplace.user_service.model.enums.MessageType;
+import com.nftmarketplace.user_service.model.kafkaModel.RequestKafka;
+
 import com.nftmarketplace.user_service.model.node.User;
 import com.nftmarketplace.user_service.repository.UserRepository;
 import com.nftmarketplace.user_service.service.CloudinaryService;
@@ -20,15 +24,19 @@ import com.nftmarketplace.user_service.utils.mapper.UserMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserServiceImpl implements UserService {
     UserRepository userRepository;
+    EventProducer eventProducer;
     CloudinaryService cloudinaryService;
+    Gson gson = new Gson();
 
     @Override
     public Mono<UserFlat> createUser(UserRequest request) {
@@ -41,9 +49,6 @@ public class UserServiceImpl implements UserService {
                     if (tuple.getT1() || tuple.getT2() || tuple.getT3() || tuple.getT4())
                         return Mono.error(new AppException(ErrorCode.EXISTED));
                     User user = UserMapper.INSTANCE.toUser(request);
-                    user.setCreatedAt(new Date());
-                    user.setUpdatedAt(new Date());
-                    user.setLastLogin(new Date());
                     if (request.getAvatarImg() != null)
                         return cloudinaryService.createAvatarPath(Mono.just(request.getAvatarImg()), request.getId())
                                 .flatMap(avatarPath -> {
@@ -85,54 +90,104 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<String> checkFriendStatus(String userId1, String userId2) {
-        return checkExistUsers(userId1, userId2).then(Mono.defer(() -> {
-            return userRepository.checkFriendStatus(userId1, userId2)
+    public Mono<String> checkFriendStatus(String userRequestId, String userReceiveId) {
+        return checkExistUsers(userRequestId, userReceiveId).then(Mono.defer(() -> {
+            return userRepository.checkFriendStatus(userRequestId, userReceiveId)
                     .switchIfEmpty(Mono.just(FriendStatus.NOT_FRIEND.getStatus()));
         }));
     }
 
     @Override
-    public Mono<String> sendFriendRequest(String userId1, String userId2) {
-        return checkFriendStatus(userId1, userId2).flatMap(status -> {
+    public Mono<String> sendFriendRequest(String userRequestId, String userReceiveId) {
+        return checkFriendStatus(userRequestId, userReceiveId).flatMap(status -> {
             FriendStatus friendStatus = FriendStatus.valueOf(status.toUpperCase());
             return switch (friendStatus) {
                 case ACCEPTED -> Mono.just("Already friend!");
                 case WAITING -> Mono.just("Waiting for accept!");
                 case REJECTED ->
-                    userRepository.handleFriendRequest(userId1, userId2, FriendStatus.WAITING.getStatus())
+                    userRepository.handleFriendRequest(userRequestId, userReceiveId, FriendStatus.WAITING.getStatus())
+                            .doOnSuccess(_ -> {
+                                userRepository.findById(userReceiveId).flatMap(user -> {
+                                    RequestKafka request = RequestKafka.builder()
+                                            .userRequestId(userRequestId)
+                                            .userRequestName(user.getFirstName() + user.getLastName())
+                                            .userRequestAvatarPath(user.getAvatarPath())
+                                            .userReceiveId(userReceiveId)
+                                            .messageType(MessageType.ADD_FRIEND)
+                                            .build();
+                                    eventProducer.send("request", gson.toJson(request)).subscribe();
+                                    return Mono.empty();
+                                }).subscribe();
+                            })
                             .then(Mono.just("Resend friend request successfully!"));
                 // ** Not Friend
-                default -> userRepository.sendFriendRequest(userId1, userId2)
+                default -> userRepository.sendFriendRequest(userRequestId, userReceiveId)
+                        .doOnSuccess(_ -> {
+                            userRepository.findById(userReceiveId).flatMap(user -> {
+                                RequestKafka request = RequestKafka.builder()
+                                        .userRequestId(userRequestId)
+                                        .userRequestName(user.getFirstName() + user.getLastName())
+                                        .userRequestAvatarPath(user.getAvatarPath())
+                                        .userReceiveId(userReceiveId)
+                                        .messageType(MessageType.ADD_FRIEND)
+                                        .build();
+                                eventProducer.send("request", gson.toJson(request)).subscribe();
+                                return Mono.empty();
+                            }).subscribe();
+                        })
                         .then(Mono.just("Create friend request successfully!"));
             };
         });
     };
 
     @Override
-    public Mono<String> handleFriendRequest(String userId1, String userId2, FriendStatus status) {
-        return checkExistUsers(userId1, userId2).then(Mono.defer(() -> {
-            return userRepository.checkFriendStatus(userId1, userId2)
-                    // TODO ERROR CODE
-                    .switchIfEmpty(Mono.error(new AppException(ErrorCode.TOKEN_EXPIRED)))
+    public Mono<String> handleFriendRequest(String messageId, String userRequestId, String userReceiveId,
+            FriendStatus status) {
+        return checkExistUsers(userRequestId, userReceiveId).then(Mono.defer(() -> {
+            return checkFriendStatus(userRequestId, userReceiveId)
                     .flatMap(friendStatus -> {
                         if (!friendStatus.equals(FriendStatus.WAITING.getStatus())) {
-                            // TODO ERROR CODE
-                            return Mono.error(new AppException(ErrorCode.INCORRECT_USERNAME_OR_PWD));
+                            return Mono.error(new AppException(ErrorCode.NOT_REQUEST_FRIEND));
                         }
-                        return userRepository.handleFriendRequest(userId1, userId2, status.getStatus())
+                        return userRepository.handleFriendRequest(userRequestId, userReceiveId, status.getStatus())
+                                .doOnSuccess(_ -> {
+                                    userRepository.findById(userReceiveId).flatMap(user -> {
+                                        RequestKafka request = RequestKafka.builder()
+                                                .messageId(messageId)
+                                                .messageType(status.name() == FriendStatus.ACCEPTED.name()
+                                                        ? MessageType.ACCEPT_FRIEND
+                                                        : MessageType.REJECT_FRIEND)
+                                                .build();
+                                        eventProducer.send("request", gson.toJson(request)).subscribe();
+                                        return Mono.empty();
+                                    }).subscribe();
+                                })
                                 .then(Mono.just(status.getMessage()));
                     });
         }));
     }
 
     @Override
-    public Mono<String> unFriend(String userId1, String userId2) {
-        return checkExistUsers(userId1, userId2).then(Mono.defer(() -> {
-            return checkFriendStatus(userId1, userId2).flatMap(status -> {
+    public Mono<String> unFriend(String userRequestId, String userReceiveId) {
+        return checkExistUsers(userRequestId, userReceiveId).then(Mono.defer(() -> {
+            return checkFriendStatus(userRequestId, userReceiveId).flatMap(status -> {
                 if (!status.equals(FriendStatus.ACCEPTED.getStatus()))
                     return Mono.just("Not friend to unfriend!");
-                return userRepository.unFriend(userId1, userId2).then(Mono.just("Unfriend completed!"));
+                return userRepository.unFriend(userRequestId, userReceiveId)
+                        .doOnSuccess(_ -> {
+                            userRepository.findById(userReceiveId).flatMap(user -> {
+                                RequestKafka request = RequestKafka.builder()
+                                        .userRequestId(userRequestId)
+                                        .userRequestName(user.getFirstName() + user.getLastName())
+                                        .userRequestAvatarPath(user.getAvatarPath())
+                                        .userReceiveId(userReceiveId)
+                                        .messageType(MessageType.ADD_FRIEND)
+                                        .build();
+                                eventProducer.send("request", gson.toJson(request)).subscribe();
+                                return Mono.empty();
+                            }).subscribe();
+                        })
+                        .then(Mono.just("Unfriend completed!"));
             });
         }));
     }
@@ -143,29 +198,55 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<Boolean> checkFollowerStatus(String userId1, String userId2) {
-        return userRepository.checkFollowerStatus(userId1, userId2);
+    public Mono<Boolean> checkFollowerStatus(String userRequestId, String userReceiveId) {
+        return userRepository.checkFollowerStatus(userRequestId, userReceiveId);
     }
 
     @Override
-    public Mono<String> addFollower(String userId1, String userId2) {
-        return checkExistUsers(userId1, userId2).then(Mono.defer(() -> {
-            return checkFollowerStatus(userId1, userId2).flatMap(isFollow -> {
+    public Mono<String> addFollower(String userRequestId, String userReceiveId) {
+        return checkExistUsers(userRequestId, userReceiveId).then(Mono.defer(() -> {
+            return checkFollowerStatus(userRequestId, userReceiveId).flatMap(isFollow -> {
                 if (isFollow)
                     return Mono.just("Already follow!");
-                return userRepository.addFollower(userId1, userId2)
+                return userRepository.addFollower(userRequestId, userReceiveId)
+                        .doOnSuccess(_ -> {
+                            userRepository.findById(userReceiveId).flatMap(user -> {
+                                RequestKafka request = RequestKafka.builder()
+                                        .userRequestId(userRequestId)
+                                        .userRequestName(user.getFirstName() + user.getLastName())
+                                        .userRequestAvatarPath(user.getAvatarPath())
+                                        .userReceiveId(userReceiveId)
+                                        .messageType(MessageType.ADD_FRIEND)
+                                        .build();
+                                eventProducer.send("request", gson.toJson(request)).subscribe();
+                                return Mono.empty();
+                            }).subscribe();
+                        })
                         .then(Mono.just("Follow completed!"));
             });
         }));
     }
 
     @Override
-    public Mono<String> unFollower(String userId1, String userId2) {
-        return checkExistUsers(userId1, userId2).then(Mono.defer(() -> {
-            return checkFollowerStatus(userId1, userId2).flatMap(isFollow -> {
+    public Mono<String> unFollower(String userRequestId, String userReceiveId) {
+        return checkExistUsers(userRequestId, userReceiveId).then(Mono.defer(() -> {
+            return checkFollowerStatus(userRequestId, userReceiveId).flatMap(isFollow -> {
                 if (!isFollow)
                     return Mono.just("Not follow to unfollow!");
-                return userRepository.unFollower(userId1, userId2)
+                return userRepository.unFollower(userRequestId, userReceiveId)
+                        .doOnSuccess(_ -> {
+                            userRepository.findById(userReceiveId).flatMap(user -> {
+                                RequestKafka request = RequestKafka.builder()
+                                        .userRequestId(userRequestId)
+                                        .userRequestName(user.getFirstName() + user.getLastName())
+                                        .userRequestAvatarPath(user.getAvatarPath())
+                                        .userReceiveId(userReceiveId)
+                                        .messageType(MessageType.ADD_FRIEND)
+                                        .build();
+                                eventProducer.send("request", gson.toJson(request)).subscribe();
+                                return Mono.empty();
+                            }).subscribe();
+                        })
                         .then(Mono.just("Unfollow completed!"));
             });
         }));
@@ -176,12 +257,12 @@ public class UserServiceImpl implements UserService {
         return checkExistUsers(userId).then(userRepository.findFollowerIds(userId).collect(Collectors.toSet()));
     }
 
-    // TODO Show what not exists
     @Override
     public Mono<Void> checkExistUsers(String... userIds) {
         return Flux.fromArray(userIds)
                 .flatMap(userId -> userRepository.existsById(userId)
-                        .flatMap(exist -> exist ? Mono.empty() : Mono.error(new AppException(ErrorCode.NOT_EXISTED))))
+                        .flatMap(exist -> exist ? Mono.empty()
+                                : Mono.error(new AppException(ErrorCode.NOT_EXISTED, "User " + userId + " not exist"))))
                 .then();
     }
 }

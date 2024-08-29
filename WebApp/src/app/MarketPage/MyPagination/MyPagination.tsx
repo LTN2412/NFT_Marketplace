@@ -61,7 +61,7 @@ export default function MyPagination({ currentPage, totalPage }: MyPagination) {
             {Array(lessShowPage)
               .fill(0)
               .map((_, index) => (
-                <PaginationItem>
+                <PaginationItem key={index}>
                   <Link to={`${location}?page=${1 + index}`}>
                     <PaginationLink>{1 + index}</PaginationLink>
                   </Link>
@@ -75,7 +75,7 @@ export default function MyPagination({ currentPage, totalPage }: MyPagination) {
             {Array(moreShowPage)
               .fill(0)
               .map((_, index) => (
-                <PaginationItem>
+                <PaginationItem key={index}>
                   <Link
                     to={`${location}?page=${totalPage - moreShowPage + index + 1}`}
                   >
@@ -97,7 +97,7 @@ export default function MyPagination({ currentPage, totalPage }: MyPagination) {
               .map((_, index) => (
                 <>
                   {currentPage + index - center > 0 ? (
-                    <PaginationItem>
+                    <PaginationItem key={index}>
                       <Link
                         to={`${location}?page=${currentPage + index - center}`}
                       >

@@ -10,13 +10,11 @@ import jakarta.validation.constraints.Size;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -52,4 +50,6 @@ public class UserRequest {
     @NotBlank(message = "Username must not be blank")
     @Size(min = 7, max = 100, message = "Username must be between 7 and 100 characters")
     String username;
+
+    Boolean isAuthor = false;
 }

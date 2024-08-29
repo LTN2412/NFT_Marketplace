@@ -46,7 +46,7 @@ export default function Footer() {
             />
             <Button
               type="submit"
-              className="flex h-12 w-full items-center justify-center gap-1 rounded-2xl bg-purple hover:bg-purple hover:opacity-80 md:absolute md:left-[300px] md:w-[140px] md:hover:opacity-100"
+              className="flex h-12 w-full items-center justify-center gap-1 rounded-2xl bg-purple hover:bg-purple md:absolute md:left-[300px] md:w-[140px]"
             >
               <EmailIcon className="w-7 fill-foreground lg:hidden" />
               Subscribe
@@ -58,7 +58,7 @@ export default function Footer() {
         </div>
       </h1>
       <div className="w-full border-t border-gray bg-background px-24 py-6 text-lightGray max-lg:hidden">
-        © NFT Marketplace
+        © NFT Marketplace LTN
       </div>
     </div>
   );

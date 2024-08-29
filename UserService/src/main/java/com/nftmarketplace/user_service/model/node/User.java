@@ -46,16 +46,19 @@ public class User {
     String avatarPath;
 
     @Property("created_at")
-    Date createdAt;
+    Date createdAt = new Date();
 
     @Property("updated_at")
-    Date updatedAt;
+    Date updatedAt = new Date();
 
     @Property("last_login")
-    Date lastLogin;
+    Date lastLogin = new Date();
 
     @Property
     String username;
+
+    @Property
+    Boolean isAuthor = false;
 
     @Relationship(type = "IS_FRIEND", direction = Relationship.Direction.OUTGOING)
     Set<User> friends = new HashSet<>();
