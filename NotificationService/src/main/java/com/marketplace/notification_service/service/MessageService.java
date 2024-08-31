@@ -1,7 +1,7 @@
 package com.marketplace.notification_service.service;
 
 import com.marketplace.notification_service.model.Message;
-import com.marketplace.notification_service.model.kafkaModel.RequestKafka;
+import com.marketplace.notification_service.model.kafkaModel.NotificationKafka;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,7 +19,7 @@ public interface MessageService {
 
     Mono<Long> getNumberMessagesNotSeen(String userId);
 
-    Mono<Message> updateMessage(RequestKafka message);
+    Mono<Message> updateMessage(NotificationKafka message);
 
     Mono<String> updateIsSeen(String messageId);
 

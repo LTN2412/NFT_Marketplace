@@ -3,6 +3,8 @@ package com.nftmarketplace.user_service.model.dto.response;
 import java.util.Date;
 import java.util.Set;
 
+import com.nftmarketplace.user_service.model.enums.Gender;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +24,7 @@ public class UserFlat {
 
     String lastName;
 
-    String gender;
+    Gender gender;
 
     String email;
 

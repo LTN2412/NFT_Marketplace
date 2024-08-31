@@ -1,6 +1,8 @@
 package com.nftmarketplace.user_service.controller;
 
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -21,7 +23,7 @@ public class CloudinaryController {
     CloudinaryService cloudinaryService;
 
     @PostMapping("/avatarPath")
-    public Mono<String> createAvatarPath(@RequestPart Mono<FilePart> avatar, @RequestPart String id) {
-        return cloudinaryService.createAvatarPath(avatar, id);
+    public Mono<String> createAvatarPath(@AuthenticationPrincipal Jwt jwt, @RequestPart Mono<FilePart> avatar) {
+        return cloudinaryService.createAvatarPath(avatar, jwt.getSubject());
     }
 }

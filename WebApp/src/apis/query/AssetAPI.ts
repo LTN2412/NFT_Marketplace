@@ -35,12 +35,12 @@ export const FetchAllAssetFrom1AuthorAPI = async (
 };
 
 export const FetchAllAssetsByTagAPI = async (
-  tagName: string,
+  nameTag: string,
   limit: number,
 ) => {
   return httpElastic.get<AssetCardsResponse>("/asset/byTag", {
     params: {
-      tagName: tagName,
+      nameTag: nameTag,
       limit: limit,
     },
   });

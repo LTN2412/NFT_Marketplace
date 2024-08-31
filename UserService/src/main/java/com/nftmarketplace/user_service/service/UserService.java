@@ -5,12 +5,15 @@ import java.util.Set;
 import com.nftmarketplace.user_service.model.dto.request.UserRequest;
 import com.nftmarketplace.user_service.model.dto.response.UserFlat;
 import com.nftmarketplace.user_service.model.enums.FriendStatus;
+import com.nftmarketplace.user_service.model.kafkaModel.CreateAccountKafka;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface UserService {
     Mono<UserFlat> createUser(UserRequest request);
+
+    Mono<UserFlat> createUserKafka(CreateAccountKafka request);
 
     Mono<UserFlat> getUser(String userId);
 

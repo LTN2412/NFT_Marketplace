@@ -20,7 +20,8 @@ public enum ErrorCode {
     TOKEN_EXPIRED(106, "Token has expired!", HttpStatus.UNAUTHORIZED),
     INCORRECT_USERNAME_OR_PWD(107, "Incorrect username or password!", HttpStatus.UNAUTHORIZED),
     UNAUTHENTICATED(108, "Unauthenticated!", HttpStatus.UNAUTHORIZED),
-    UNAUTHORIZED(109, "Not have permission!", HttpStatus.FORBIDDEN);
+    UNAUTHORIZED(109, "Not have permission!", HttpStatus.FORBIDDEN),
+    CAN_NOT_UPDATE(110, "Can't not update constant field", HttpStatus.BAD_REQUEST);
 
     int code;
     String message;

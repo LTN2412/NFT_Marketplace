@@ -1,4 +1,4 @@
-import { TokenResponse } from "@/types/Account.type";
+import { APIResponse } from "@/types/APIResponse.type";
 import { FormDataSignUp, FormDataSignIn } from "@/types/schema/SignUp";
 import { httpAccount } from "@/utils/Http";
 
@@ -7,7 +7,11 @@ export const FetchTokenAPI = async (data: FormDataSignIn) => {
   for (const [key, value] of Object.entries(data)) {
     formData.append(key, value);
   }
-  return httpAccount.get<TokenResponse>("/identity/token", { data: formData });
+  return httpAccount.post<APIResponse>("/token/cookie", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
 
 export const CreateAccountAPI = async (data: FormDataSignUp) => {
@@ -16,5 +20,5 @@ export const CreateAccountAPI = async (data: FormDataSignUp) => {
     formData.append(key, value);
     formData.delete("verifyPassword");
   }
-  return httpAccount.get<TokenResponse>("/identity/token", { data: formData });
+  return httpAccount.get<APIResponse>("/identity/token", { data: formData });
 };

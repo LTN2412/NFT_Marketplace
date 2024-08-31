@@ -7,7 +7,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface AssetService {
-    Mono<String> addAsset(AssetRequest request);
+    Mono<String> addAsset(String userId, AssetRequest request);
 
     Mono<String> removeAsset(String userId, String assetId);
 

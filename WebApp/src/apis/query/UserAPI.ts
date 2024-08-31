@@ -6,30 +6,21 @@ import {
 } from "@/types/User.type";
 import { httpUser } from "@/utils/Http";
 
-export const FetchUserAPI = async (userId: string) => {
-  return httpUser.get<UserResponse>("/author", {
-    params: {
-      userId: userId,
-    },
-  });
+export const FetchUserAPI = async () => {
+  return httpUser.get<UserResponse>("");
 };
 
-export const FetchCartUserAPI = async (userId: string) => {
-  return httpUser.get<CartUserResponse>("/asset", {
-    params: {
-      userId: userId,
-    },
-  });
+export const FetchCartUserAPI = async () => {
+  return httpUser.get<CartUserResponse>("/asset");
 };
 
 export const AddCartItemAPI = async (addUserAsset: AddUserAsset) => {
   return httpUser.post<AddUserAsset>("/asset", addUserAsset);
 };
 
-export const DeleteCartItemAPI = async (userId: string, assetId: string) => {
+export const DeleteCartItemAPI = async (assetId: string) => {
   return httpUser.delete<APIResponse>("/asset", {
     params: {
-      userId: userId,
       assetId: assetId,
     },
   });
@@ -37,13 +28,11 @@ export const DeleteCartItemAPI = async (userId: string, assetId: string) => {
 
 export const AcceptFriendAPI = async (
   messageId: string,
-  userRequestId: string,
   userReceiveId: string,
 ) => {
-  return httpUser.post<APIResponse>("/acceptFriend", null, {
+  return httpUser.put<APIResponse>("/acceptFriend", null, {
     params: {
       messageId: messageId,
-      userRequestId: userRequestId,
       userReceiveId: userReceiveId,
     },
   });
@@ -51,13 +40,11 @@ export const AcceptFriendAPI = async (
 
 export const RejectFriendAPI = async (
   messageId: string,
-  userRequestId: string,
   userReceiveId: string,
 ) => {
-  return httpUser.post<APIResponse>("/rejectFriend", null, {
+  return httpUser.put<APIResponse>("/rejectFriend", null, {
     params: {
       messageId: messageId,
-      userRequestId: userRequestId,
       userReceiveId: userReceiveId,
     },
   });

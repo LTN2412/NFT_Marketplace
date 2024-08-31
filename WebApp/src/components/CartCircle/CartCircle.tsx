@@ -7,13 +7,11 @@ import { GetCartUserById } from "@/apis/query-options/UserQuery";
 
 import CartIcon from "@/assets/Cart.svg?react";
 
-export interface CratCircleProps extends HTMLAttributes<HTMLDivElement> {
-  userId: string;
-}
+export interface CratCircleProps extends HTMLAttributes<HTMLDivElement> {}
 
 const CartCircle = React.forwardRef<HTMLDivElement, CratCircleProps>(
-  ({ className, userId, ...props }, ref) => {
-    const { data } = useQuery(GetCartUserById(userId));
+  ({ className, ...props }, ref) => {
+    const { data } = useQuery(GetCartUserById());
     const numberAssets = data?.data.result.length || 0;
     return (
       <Link to={"/cart"} className="fixed bottom-3 left-3">

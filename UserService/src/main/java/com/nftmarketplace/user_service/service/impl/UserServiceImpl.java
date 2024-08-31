@@ -13,7 +13,8 @@ import com.nftmarketplace.user_service.model.dto.request.UserRequest;
 import com.nftmarketplace.user_service.model.dto.response.UserFlat;
 import com.nftmarketplace.user_service.model.enums.FriendStatus;
 import com.nftmarketplace.user_service.model.enums.MessageType;
-import com.nftmarketplace.user_service.model.kafkaModel.RequestKafka;
+import com.nftmarketplace.user_service.model.kafkaModel.CreateAccountKafka;
+import com.nftmarketplace.user_service.model.kafkaModel.NotificationKafka;
 
 import com.nftmarketplace.user_service.model.node.User;
 import com.nftmarketplace.user_service.repository.UserRepository;
@@ -43,8 +44,8 @@ public class UserServiceImpl implements UserService {
         return Mono.zip(
                 userRepository.existsById(request.getId()),
                 userRepository.existsByUsername(request.getUsername()),
-                userRepository.existsByEmail(request.getUsername()),
-                userRepository.existsByPhoneNumber(request.getUsername()))
+                userRepository.existsByEmail(request.getEmail()),
+                userRepository.existsByPhoneNumber(request.getPhoneNumber()))
                 .flatMap(tuple -> {
                     if (tuple.getT1() || tuple.getT2() || tuple.getT3() || tuple.getT4())
                         return Mono.error(new AppException(ErrorCode.EXISTED));
@@ -56,6 +57,20 @@ public class UserServiceImpl implements UserService {
                                     return userRepository.save(user)
                                             .flatMap(saveUser -> Mono.just(UserMapper.INSTANCE.toUserFlat(saveUser)));
                                 });
+                    return userRepository.save(user)
+                            .flatMap(saveUser -> Mono.just(UserMapper.INSTANCE.toUserFlat(saveUser)));
+                });
+    }
+
+    @Override
+    public Mono<UserFlat> createUserKafka(CreateAccountKafka request) {
+        return Mono.zip(
+                userRepository.existsById(request.getId()),
+                userRepository.existsByUsername(request.getUsername()),
+                userRepository.existsByEmail(request.getUsername())).flatMap(tuple -> {
+                    if (tuple.getT1() || tuple.getT2() || tuple.getT3())
+                        return Mono.error((new AppException(ErrorCode.EXISTED)));
+                    User user = UserMapper.INSTANCE.toUser(request);
                     return userRepository.save(user)
                             .flatMap(saveUser -> Mono.just(UserMapper.INSTANCE.toUserFlat(saveUser)));
                 });
@@ -93,7 +108,7 @@ public class UserServiceImpl implements UserService {
     public Mono<String> checkFriendStatus(String userRequestId, String userReceiveId) {
         return checkExistUsers(userRequestId, userReceiveId).then(Mono.defer(() -> {
             return userRepository.checkFriendStatus(userRequestId, userReceiveId)
-                    .switchIfEmpty(Mono.just(FriendStatus.NOT_FRIEND.getStatus()));
+                    .switchIfEmpty(Mono.just(FriendStatus.NOT_FRIEND.name()));
         }));
     }
 
@@ -105,10 +120,10 @@ public class UserServiceImpl implements UserService {
                 case ACCEPTED -> Mono.just("Already friend!");
                 case WAITING -> Mono.just("Waiting for accept!");
                 case REJECTED ->
-                    userRepository.handleFriendRequest(userRequestId, userReceiveId, FriendStatus.WAITING.getStatus())
+                    userRepository.handleFriendRequest(userRequestId, userReceiveId, FriendStatus.WAITING.name())
                             .doOnSuccess(_ -> {
                                 userRepository.findById(userReceiveId).flatMap(user -> {
-                                    RequestKafka request = RequestKafka.builder()
+                                    NotificationKafka request = NotificationKafka.builder()
                                             .userRequestId(userRequestId)
                                             .userRequestName(user.getFirstName() + user.getLastName())
                                             .userRequestAvatarPath(user.getAvatarPath())
@@ -124,7 +139,7 @@ public class UserServiceImpl implements UserService {
                 default -> userRepository.sendFriendRequest(userRequestId, userReceiveId)
                         .doOnSuccess(_ -> {
                             userRepository.findById(userReceiveId).flatMap(user -> {
-                                RequestKafka request = RequestKafka.builder()
+                                NotificationKafka request = NotificationKafka.builder()
                                         .userRequestId(userRequestId)
                                         .userRequestName(user.getFirstName() + user.getLastName())
                                         .userRequestAvatarPath(user.getAvatarPath())
@@ -146,13 +161,13 @@ public class UserServiceImpl implements UserService {
         return checkExistUsers(userRequestId, userReceiveId).then(Mono.defer(() -> {
             return checkFriendStatus(userRequestId, userReceiveId)
                     .flatMap(friendStatus -> {
-                        if (!friendStatus.equals(FriendStatus.WAITING.getStatus())) {
+                        if (!friendStatus.equals(FriendStatus.WAITING.name())) {
                             return Mono.error(new AppException(ErrorCode.NOT_REQUEST_FRIEND));
                         }
-                        return userRepository.handleFriendRequest(userRequestId, userReceiveId, status.getStatus())
+                        return userRepository.handleFriendRequest(userRequestId, userReceiveId, status.name())
                                 .doOnSuccess(_ -> {
                                     userRepository.findById(userReceiveId).flatMap(user -> {
-                                        RequestKafka request = RequestKafka.builder()
+                                        NotificationKafka request = NotificationKafka.builder()
                                                 .messageId(messageId)
                                                 .messageType(status.name() == FriendStatus.ACCEPTED.name()
                                                         ? MessageType.ACCEPT_FRIEND
@@ -171,12 +186,12 @@ public class UserServiceImpl implements UserService {
     public Mono<String> unFriend(String userRequestId, String userReceiveId) {
         return checkExistUsers(userRequestId, userReceiveId).then(Mono.defer(() -> {
             return checkFriendStatus(userRequestId, userReceiveId).flatMap(status -> {
-                if (!status.equals(FriendStatus.ACCEPTED.getStatus()))
+                if (!status.equals(FriendStatus.ACCEPTED.name()))
                     return Mono.just("Not friend to unfriend!");
                 return userRepository.unFriend(userRequestId, userReceiveId)
                         .doOnSuccess(_ -> {
                             userRepository.findById(userReceiveId).flatMap(user -> {
-                                RequestKafka request = RequestKafka.builder()
+                                NotificationKafka request = NotificationKafka.builder()
                                         .userRequestId(userRequestId)
                                         .userRequestName(user.getFirstName() + user.getLastName())
                                         .userRequestAvatarPath(user.getAvatarPath())
@@ -211,7 +226,7 @@ public class UserServiceImpl implements UserService {
                 return userRepository.addFollower(userRequestId, userReceiveId)
                         .doOnSuccess(_ -> {
                             userRepository.findById(userReceiveId).flatMap(user -> {
-                                RequestKafka request = RequestKafka.builder()
+                                NotificationKafka request = NotificationKafka.builder()
                                         .userRequestId(userRequestId)
                                         .userRequestName(user.getFirstName() + user.getLastName())
                                         .userRequestAvatarPath(user.getAvatarPath())
@@ -236,7 +251,7 @@ public class UserServiceImpl implements UserService {
                 return userRepository.unFollower(userRequestId, userReceiveId)
                         .doOnSuccess(_ -> {
                             userRepository.findById(userReceiveId).flatMap(user -> {
-                                RequestKafka request = RequestKafka.builder()
+                                NotificationKafka request = NotificationKafka.builder()
                                         .userRequestId(userRequestId)
                                         .userRequestName(user.getFirstName() + user.getLastName())
                                         .userRequestAvatarPath(user.getAvatarPath())

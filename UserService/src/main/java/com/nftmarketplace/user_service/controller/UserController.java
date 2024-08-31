@@ -24,7 +24,8 @@ import java.util.Set;
 
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,12 +36,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
         UserService userService;
 
         @PostMapping
-        public Mono<APIResponse<UserFlat>> createUser(@Valid @ModelAttribute UserRequest request) {
+        public Mono<APIResponse<UserFlat>> createUser(@ModelAttribute @Valid UserRequest request) {
                 return userService.createUser(request)
                                 .map(user -> APIResponse
                                                 .<UserFlat>builder()
@@ -49,15 +49,15 @@ public class UserController {
         }
 
         @GetMapping
-        // @PreAuthorize("hasAuthority('SCOPE_USER')")
-        public Mono<APIResponse<UserFlat>> getUser(@RequestParam String userId) {
-                return userService.getUser(userId)
+        public Mono<APIResponse<UserFlat>> getUser(@AuthenticationPrincipal Jwt jwt) {
+                return userService.getUser(jwt.getSubject())
                                 .map(user -> APIResponse
                                                 .<UserFlat>builder()
                                                 .result(user)
                                                 .build());
         }
 
+        @PreAuthorize("hasAuthority('ROLE_ADMIN')")
         @GetMapping(path = "/all", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
         public Flux<APIResponse<UserFlat>> findAllUsers() {
                 return userService.getAllUsers()
@@ -68,14 +68,16 @@ public class UserController {
         }
 
         @PutMapping
-        public Mono<APIResponse<UserFlat>> updateUser(@RequestParam String userId, @RequestBody UserRequest request) {
-                return userService.updateUser(userId, request)
+        public Mono<APIResponse<UserFlat>> updateUser(@AuthenticationPrincipal Jwt jwt,
+                        @RequestBody @Valid UserRequest request) {
+                return userService.updateUser(jwt.getSubject(), request)
                                 .map(user -> APIResponse
                                                 .<UserFlat>builder()
                                                 .result(user)
                                                 .build());
         }
 
+        @PreAuthorize("hasAuthority('ROLE_ADMIN')")
         @DeleteMapping
         public Mono<APIResponse<?>> deleteUser(@RequestParam String userId) {
                 return userService.deleteUser(userId)
@@ -85,29 +87,31 @@ public class UserController {
                                                 .build());
         }
 
-        @PostMapping("/friendRequest")
-        public Mono<APIResponse<?>> sendFriendRequest(@RequestParam String userRequestId, String userReceiveId) {
-                return userService.sendFriendRequest(userRequestId, userReceiveId)
+        @PutMapping("/friendRequest")
+        public Mono<APIResponse<?>> sendFriendRequest(@AuthenticationPrincipal Jwt jwt, String userReceiveId) {
+                return userService.sendFriendRequest(jwt.getSubject(), userReceiveId)
                                 .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
                                                 .build());
         }
 
-        @PostMapping("/acceptFriend")
-        public Mono<APIResponse<?>> addFriend(@RequestParam String messageId, String userRequestId,
+        @PutMapping("/acceptFriend")
+        public Mono<APIResponse<?>> addFriend(@AuthenticationPrincipal Jwt jwt, @RequestParam String messageId,
                         String userReceiveId) {
-                return userService.handleFriendRequest(messageId, userRequestId, userReceiveId, FriendStatus.ACCEPTED)
+                return userService
+                                .handleFriendRequest(messageId, jwt.getSubject(), userReceiveId, FriendStatus.ACCEPTED)
                                 .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
                                                 .build());
         }
 
-        @PostMapping("/rejectFriend")
-        public Mono<APIResponse<?>> rejectFriend(@RequestParam String messageId, String userRequestId,
+        @PutMapping("/rejectFriend")
+        public Mono<APIResponse<?>> rejectFriend(@AuthenticationPrincipal Jwt jwt, @RequestParam String messageId,
                         String userReceiveId) {
-                return userService.handleFriendRequest(messageId, userRequestId, userReceiveId, FriendStatus.REJECTED)
+                return userService
+                                .handleFriendRequest(messageId, jwt.getSubject(), userReceiveId, FriendStatus.REJECTED)
                                 .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
@@ -115,8 +119,8 @@ public class UserController {
         }
 
         @GetMapping("/friends")
-        public Mono<APIResponse<Set<String>>> getAllFriends(@RequestParam String userId) {
-                return userService.getAllFriends(userId)
+        public Mono<APIResponse<Set<String>>> getAllFriends(@AuthenticationPrincipal Jwt jwt) {
+                return userService.getAllFriends(jwt.getSubject())
                                 .map(userIds -> APIResponse
                                                 .<Set<String>>builder()
                                                 .result(userIds)
@@ -124,17 +128,17 @@ public class UserController {
         }
 
         @DeleteMapping("/unFriend")
-        public Mono<APIResponse<?>> unFriend(@RequestParam String userRequestId, String userReceiveId) {
-                return userService.unFriend(userRequestId, userReceiveId)
+        public Mono<APIResponse<?>> unFriend(@AuthenticationPrincipal Jwt jwt, String userReceiveId) {
+                return userService.unFriend(jwt.getSubject(), userReceiveId)
                                 .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
                                                 .build());
         }
 
-        @PostMapping("/addFollower")
-        public Mono<APIResponse<?>> addFollower(@RequestParam String userRequestId, String userReceiveId) {
-                return userService.addFollower(userRequestId, userReceiveId)
+        @PutMapping("/addFollower")
+        public Mono<APIResponse<?>> addFollower(@AuthenticationPrincipal Jwt jwt, @RequestParam String userReceiveId) {
+                return userService.addFollower(jwt.getSubject(), userReceiveId)
                                 .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
@@ -142,8 +146,8 @@ public class UserController {
         }
 
         @GetMapping("/followers")
-        public Mono<APIResponse<Set<String>>> getAllFollowers(@RequestParam String userId) {
-                return userService.getAllFollowers(userId)
+        public Mono<APIResponse<Set<String>>> getAllFollowers(@AuthenticationPrincipal Jwt jwt) {
+                return userService.getAllFollowers(jwt.getSubject())
                                 .map(userIds -> APIResponse
                                                 .<Set<String>>builder()
                                                 .result(userIds)
@@ -151,8 +155,8 @@ public class UserController {
         }
 
         @DeleteMapping("/unFollower")
-        public Mono<APIResponse<?>> unFollower(@RequestParam String userRequestId, String userReceiveId) {
-                return userService.unFollower(userRequestId, userReceiveId)
+        public Mono<APIResponse<?>> unFollower(@AuthenticationPrincipal Jwt jwt, @RequestParam String userReceiveId) {
+                return userService.unFollower(jwt.getSubject(), userReceiveId)
                                 .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)

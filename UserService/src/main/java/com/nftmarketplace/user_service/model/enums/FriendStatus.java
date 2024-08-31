@@ -9,11 +9,10 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum FriendStatus {
-    NOT_FRIEND("not_friend", "Not friend!"),
-    WAITING("waiting", "Send request completed!"),
-    ACCEPTED("accepted", "Add friend completed!"),
-    REJECTED("rejected", "Reject friend completed!");
+    NOT_FRIEND("Not friend!"),
+    WAITING("Send request completed!"),
+    ACCEPTED("Add friend completed!"),
+    REJECTED("Reject friend completed!");
 
-    String status;
     String message;
 }

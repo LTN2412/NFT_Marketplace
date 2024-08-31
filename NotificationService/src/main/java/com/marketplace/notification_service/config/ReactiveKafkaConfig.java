@@ -15,7 +15,7 @@ public class ReactiveKafkaConfig {
     ReceiverOptions<String, String> receiverOptions() {
         Map<String, Object> propsReceiver = new HashMap<>();
         propsReceiver.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        propsReceiver.put(ConsumerConfig.GROUP_ID_CONFIG, "group-request");
+        propsReceiver.put(ConsumerConfig.GROUP_ID_CONFIG, "group-notification");
         propsReceiver.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         propsReceiver.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return ReceiverOptions.create(propsReceiver);

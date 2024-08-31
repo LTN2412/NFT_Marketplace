@@ -4,7 +4,6 @@ import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.http.codec.multipart.FilePart;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -19,19 +18,15 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequest {
-    @NotBlank(message = "Id must not be blank")
     @Size(min = 36, max = 36, message = "Not valid UUID")
     String id;
 
-    @NotBlank(message = "First name must not be blank")
     @Size(min = 2, max = 100, message = "Full name must be between 2 and 100 characters")
     String firstName;
 
-    @NotBlank(message = "Last name must not be blank")
     @Size(min = 2, max = 100, message = "Full name must be between 2 and 100 characters")
     String lastName;
 
-    @NotBlank(message = "Gender must not be blank")
     String gender;
 
     @Size(max = 50)
@@ -47,9 +42,6 @@ public class UserRequest {
 
     FilePart avatarImg;
 
-    @NotBlank(message = "Username must not be blank")
     @Size(min = 7, max = 100, message = "Username must be between 7 and 100 characters")
     String username;
-
-    Boolean isAuthor = false;
 }

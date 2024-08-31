@@ -17,11 +17,7 @@ export default function MessageCard({ message }: MessageCardProps) {
   // * Mutation accept friend
   const { mutate: mutateAccept } = useMutation({
     mutationFn: () => {
-      return AcceptFriendAPI(
-        message.id,
-        message.userRequestId,
-        message.userReceiveId,
-      );
+      return AcceptFriendAPI(message.id, message.userReceiveId);
     },
     onMutate: () => {
       message.messageType = MessageType.ACCEPT_FRIEND;
@@ -33,11 +29,7 @@ export default function MessageCard({ message }: MessageCardProps) {
   // * Mutation reject friend
   const { mutate: mutateReject } = useMutation({
     mutationFn: () => {
-      return RejectFriendAPI(
-        message.id,
-        message.userRequestId,
-        message.userReceiveId,
-      );
+      return RejectFriendAPI(message.id, message.userReceiveId);
     },
     onMutate: () => {
       message.messageType = MessageType.ACCEPT_FRIEND;

@@ -14,6 +14,7 @@ import org.mapstruct.factory.Mappers;
 
 import com.nftmarketplace.user_service.model.dto.request.UserRequest;
 import com.nftmarketplace.user_service.model.dto.response.UserFlat;
+import com.nftmarketplace.user_service.model.kafkaModel.CreateAccountKafka;
 import com.nftmarketplace.user_service.model.node.Asset;
 import com.nftmarketplace.user_service.model.node.User;
 
@@ -30,6 +31,8 @@ public interface UserMapper {
     @Mapping(target = "followers", ignore = true)
     @Mapping(target = "assets", ignore = true)
     User toUser(UserRequest request);
+
+    User toUser(CreateAccountKafka request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "avatarPath", ignore = true)

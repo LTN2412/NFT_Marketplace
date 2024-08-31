@@ -9,6 +9,8 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import com.nftmarketplace.user_service.model.enums.Gender;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,7 +33,7 @@ public class User {
     String lastName;
 
     @Property
-    String gender;
+    Gender gender;
 
     @Property
     String email;

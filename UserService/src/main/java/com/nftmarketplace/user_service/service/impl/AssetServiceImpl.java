@@ -25,12 +25,12 @@ public class AssetServiceImpl implements AssetService {
     UserService userService;
 
     @Override
-    public Mono<String> addAsset(AssetRequest request) {
-        return userService.checkExistUsers(request.getUserId())
+    public Mono<String> addAsset(String userId, AssetRequest request) {
+        return userService.checkExistUsers(userId)
                 .then(Mono.defer(() -> {
                     Asset asset = AssetMapper.INSTANCE.toAsset(request);
                     return assetRepository.save(asset)
-                            .then(assetRepository.addAsset(request.getId(), request.getUserId()))
+                            .then(assetRepository.addAsset(request.getId(), userId))
                             .then(Mono.just("Added asset successfully!"));
                 }));
     }

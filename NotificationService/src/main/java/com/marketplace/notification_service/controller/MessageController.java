@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,39 +26,38 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/notification")
-@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MessageController {
-
     MessageService messageService;
 
     @GetMapping
-    public Mono<APIResponse<List<Message>>> getAllMessagesFrom1User(@RequestParam String userId) {
-        return messageService.getAllMessagesFrom1User(userId).collect(Collectors.toList()).map(
+    public Mono<APIResponse<List<Message>>> getAllMessagesFrom1User(@AuthenticationPrincipal Jwt jwt) {
+        return messageService.getAllMessagesFrom1User(jwt.getSubject()).collect(Collectors.toList()).map(
                 messages -> APIResponse.<List<Message>>builder()
                         .result(messages)
                         .build());
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping(path = "/all", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Message> getAllMessages() {
         return messageService.getAllMessages();
     }
 
     @GetMapping("/allRequest")
-    public Flux<Message> getAllMessageRequestFrom1User(@RequestParam String userId) {
-        return messageService.getAllMessageRequestFrom1User(userId);
+    public Flux<Message> getAllMessageRequestFrom1User(@AuthenticationPrincipal Jwt jwt) {
+        return messageService.getAllMessageRequestFrom1User(jwt.getSubject());
     }
 
     @GetMapping("/allReceive")
-    public Flux<Message> getAllMessageReceiveFrom1User(@RequestParam String userId) {
-        return messageService.getAllMessageReceiveFrom1User(userId);
+    public Flux<Message> getAllMessageReceiveFrom1User(@AuthenticationPrincipal Jwt jwt) {
+        return messageService.getAllMessageReceiveFrom1User(jwt.getSubject());
     }
 
     @GetMapping("/count")
-    public Mono<APIResponse<Long>> getMethodName(@RequestParam String userId) {
-        return messageService.getNumberMessagesNotSeen(userId).map(
+    public Mono<APIResponse<Long>> getMethodName(@AuthenticationPrincipal Jwt jwt) {
+        return messageService.getNumberMessagesNotSeen(jwt.getSubject()).map(
                 number -> APIResponse.<Long>builder()
                         .result(number)
                         .build());

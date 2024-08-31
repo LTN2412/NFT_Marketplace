@@ -3,13 +3,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import SignInSchema, { FormDataSignIn } from "@/types/schema/SignUp";
 import { FetchTokenAPI } from "@/apis/query/AccountAPI";
 
 import UserIccon from "@/assets/User.svg?react";
 import LockIccon from "@/assets/Lock.svg?react";
+import { GetToken } from "@/apis/query-options/AccountQuery";
+import { useNavigate } from "react-router-dom";
 
 export default function SignIn() {
   const {
@@ -25,14 +27,16 @@ export default function SignIn() {
     resolver: zodResolver(SignInSchema),
   });
   const [isPending, isTransition] = useState(false);
+  const navigate = useNavigate();
 
   const { mutate } = useMutation({
     mutationFn: (data: FormDataSignIn) => FetchTokenAPI(data),
-    onMutate: () => isTransition(true),
+    onMutate: () => {
+      isTransition(true);
+    },
     onSettled: () => isTransition(false),
     onSuccess: () => {
-      alert("Success");
-      window.location.href = "/";
+      navigate("/");
     },
     onError: (error) => {
       setError("root", {
@@ -64,7 +68,7 @@ export default function SignIn() {
           type="submit"
           className={`hover: h-14 w-80 rounded-3xl bg-purple hover:bg-purple ${isPending ? "bg-red-600" : ""}`}
         >
-          Create Account
+          Sign In
         </Button>
       </div>
     </form>

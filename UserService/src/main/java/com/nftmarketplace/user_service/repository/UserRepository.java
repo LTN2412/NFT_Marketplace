@@ -19,7 +19,7 @@ public interface UserRepository extends ReactiveNeo4jRepository<User, String> {
 
         Mono<Boolean> existsByPhoneNumber(String phoneNumber);
 
-        @Query("MATCH (u1:user {id:$userId})-[:IS_FRIEND {status:'accepted'}]-(u2:user) RETURN u2.id")
+        @Query("MATCH (u1:user {id:$userId})-[:IS_FRIEND {status:'ACCEPTED'}]-(u2:user) RETURN u2.id")
         Flux<String> findFriendIds(String userId);
 
         @Query("MATCH (u1:user {id:$userId})-[:IS_FOLLOWER]-(u2:user) RETURN u2.id")
@@ -45,7 +45,7 @@ public interface UserRepository extends ReactiveNeo4jRepository<User, String> {
 
         @Query("MATCH (u1:user {id:$userId1})\n" +
                         "MATCH (u2:user {id:$userId2})\n" +
-                        "MERGE (u1)-[r:IS_FRIEND {status:'waiting'}]-(u2)")
+                        "MERGE (u1)-[r:IS_FRIEND {status:'WAITING'}]-(u2)")
         Mono<Void> sendFriendRequest(String userId1, String userId2);
 
         @Query("MATCH (u1:user {id:$userId1})-[r:IS_FRIEND]->(u2:user {id:$userId2})\n" +

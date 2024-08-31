@@ -13,8 +13,6 @@ import lombok.experimental.FieldDefaults;
 public class AssetRequest {
     String id;
 
-    String userId;
-
     String name;
 
     Float price;

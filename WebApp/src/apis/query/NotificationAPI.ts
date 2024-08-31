@@ -3,20 +3,12 @@ import { APIResponse, CountResponse } from "@/types/APIResponse.type";
 import { MessagesResponse } from "@/types/Message.type";
 import { httpNotification } from "@/utils/Http";
 
-export const CountMessageNotSeenAPI = async (userId: string) => {
-  return httpNotification.get<CountResponse>("/count", {
-    params: {
-      userId: userId,
-    },
-  });
+export const CountMessageNotSeenAPI = async () => {
+  return httpNotification.get<CountResponse>("/count");
 };
 
-export const FetchAllMessagesFrom1UserAPI = async (userId: string) => {
-  return httpNotification.get<MessagesResponse>("", {
-    params: {
-      userId: userId,
-    },
-  });
+export const FetchAllMessagesFrom1UserAPI = async () => {
+  return httpNotification.get<MessagesResponse>("");
 };
 
 export const UpdateIsSeenMessageAPI = async (messageId: string) => {

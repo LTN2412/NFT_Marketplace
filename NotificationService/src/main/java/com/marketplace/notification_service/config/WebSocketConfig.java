@@ -1,27 +1,26 @@
 package com.marketplace.notification_service.config;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.config.CorsRegistry;
-import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.springframework.web.reactive.HandlerMapping;
+import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 
 @Configuration
-public class WebSocketConfig implements WebFluxConfigurer {
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOriginPatterns("http://localhost:5173");
-        // .allowCredentials(true);
-        WebFluxConfigurer.super.addCorsMappings(registry);
-    }
-
+@EnableWebFlux
+public class WebSocketConfig {
     @Bean
-    SimpleUrlHandlerMapping webSocketMapping(WebSocketHandler handler) {
-        return new SimpleUrlHandlerMapping(Map.of("/ws/notification", handler), -1);
+    HandlerMapping webSocketHandlerMapping(WebSocketHandler webSocketHandler) {
+        Map<String, WebSocketHandler> map = new HashMap<>();
+        map.put("/ws/notification", webSocketHandler);
+
+        SimpleUrlHandlerMapping handlerMapping = new SimpleUrlHandlerMapping();
+        handlerMapping.setOrder(1);
+        handlerMapping.setUrlMap(map);
+        return handlerMapping;
     }
 }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.marketplace.notification_service.exception.AppException;
 import com.marketplace.notification_service.exception.ErrorCode;
 import com.marketplace.notification_service.model.Message;
-import com.marketplace.notification_service.model.kafkaModel.RequestKafka;
+import com.marketplace.notification_service.model.kafkaModel.NotificationKafka;
 import com.marketplace.notification_service.repository.MessageRepository;
 import com.marketplace.notification_service.service.MessageService;
 import com.marketplace.notification_service.utils.mapper.MessageMapper;
@@ -56,7 +56,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Mono<Message> updateMessage(RequestKafka newMessage) {
+    public Mono<Message> updateMessage(NotificationKafka newMessage) {
         return messageRepository
                 .findById(newMessage.getMessageId())
                 .switchIfEmpty(Mono.error(new AppException(ErrorCode.NOT_EXISTED)))

@@ -1,0 +1,25 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: Identity Service
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    url: jdbc:postgresql://localhost:5432/identity
+    username: postgres
+    password: nhatprola1
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+jwt:
+  secretKey: "0dRyKO2u7rdq53FFNbtCvePJjuyd0QKPwFNonlXN0+1f"
+  accessToken: 3600 #S
+  refreshToken: 30 #S

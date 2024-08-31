@@ -11,7 +11,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 import com.marketplace.notification_service.model.Message;
-import com.marketplace.notification_service.model.kafkaModel.RequestKafka;
+import com.marketplace.notification_service.model.kafkaModel.NotificationKafka;
 
 @Mapper(componentModel = "spring")
 public interface MessageMapper {
@@ -21,14 +21,14 @@ public interface MessageMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "isSeen", ignore = true)
-    Message toMessage(RequestKafka request);
+    Message toMessage(NotificationKafka request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "isSeen", ignore = true)
-    Message toMessage(RequestKafka newMessage, @MappingTarget Message oldMessage);
+    Message toMessage(NotificationKafka newMessage, @MappingTarget Message oldMessage);
 
     @AfterMapping
     default void updateUpdatedAt(@MappingTarget Message message) {

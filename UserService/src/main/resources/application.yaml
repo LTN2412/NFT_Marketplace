@@ -1,5 +1,7 @@
 server:
   port: 8084
+  error:
+    include-stacktrace: never
 spring:
   application:
     name: User Service
@@ -11,10 +13,6 @@ spring:
     authentication:
       username: neo4j
       password: nhatprola1
-  # kafka:
-  #   bootstrap-servers: localhost:9092
-  #   producer:
-  #     value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 # eureka:
 #   client:
 #     service-url:

@@ -22,19 +22,22 @@ export const GetAssetDetail = (assetId: string) => {
   });
 };
 
-export const GetAllAssetDetailFrom1Author = (id: string, limit: number) => {
+export const GetAllAssetDetailFrom1Author = (
+  authorId: string,
+  limit: number,
+) => {
   return queryOptions({
-    queryKey: ["assets_from_author", id],
-    queryFn: async () => FetchAllAssetFrom1AuthorAPI(id, limit),
+    queryKey: ["assets_from_author", authorId],
+    queryFn: async () => FetchAllAssetFrom1AuthorAPI(authorId, limit),
   });
 };
 export type GetAllAssetDetailFrom1AuthorType =
   typeof GetAllAssetDetailFrom1Author;
 
-export const GetAllAssetsByTag = (name: string, limit: number) => {
+export const GetAllAssetsByTag = (nameTag: string, limit: number) => {
   return queryOptions({
-    queryKey: ["assets_tag", name],
-    queryFn: async () => FetchAllAssetsByTagAPI(name, limit),
+    queryKey: ["assets_tag", nameTag],
+    queryFn: async () => FetchAllAssetsByTagAPI(nameTag, limit),
   });
 };
 export type GetAllAssetsByTagType = typeof GetAllAssetsByTag;

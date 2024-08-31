@@ -7,5 +7,5 @@ import reactor.core.publisher.Mono;
 public interface CloudinaryService {
     public Mono<byte[]> convertFilePartToBytes(Mono<FilePart> filePartMono);
 
-    public Mono<String> createAvatarPath(Mono<FilePart> filePart, String id);
+    public Mono<String> createAvatarPath(Mono<FilePart> filePart, String userId);
 }
