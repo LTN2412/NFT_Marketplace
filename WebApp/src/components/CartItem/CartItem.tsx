@@ -9,47 +9,55 @@ import DeleteIcon from "@/assets/Delete.svg?react";
 import PlusIcon from "@/assets/Plus.svg?react";
 import MinusIcon from "@/assets/Minus.svg?react";
 
-type DeleteData = {
-  userId: string;
-  id: string;
-};
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 
 export interface CartItemProps extends HTMLAttributes<HTMLDivElement> {
-  id: string;
+  assetId: string;
   index: number;
   name: string;
   price: number;
   quantityDB: number;
   imgPath: string;
-  userId: string;
 }
 
 const CartItem = React.forwardRef<HTMLDivElement, CartItemProps>(
   (
-    {
-      className,
-      id,
-      index,
-      name,
-      price,
-      quantityDB,
-      imgPath,
-      userId,
-      ...props
-    },
+    { className, assetId, index, name, price, quantityDB, imgPath, ...props },
     ref,
   ) => {
-    const [quantity, setQuantity] = useState(quantityDB);
     const queryClient = useQueryClient();
+    const { toast } = useToast();
+    const [quantity, setQuantity] = useState(quantityDB);
     const { mutate } = useMutation({
-      mutationFn: (data: DeleteData) => DeleteCartItemAPI(data.userId, data.id),
-      onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cart"] }),
+      mutationFn: (assetId: string) => DeleteCartItemAPI(assetId),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["cart"] });
+        toast({
+          title: "Success",
+          description: "Remove asset success.",
+        });
+      },
     });
     const handleIncrement = () => {
       setQuantity(quantity + 1);
     };
     const handleDecreament = () => {
       setQuantity(quantity - 1);
+    };
+
+    const handleDelete = () => {
+      mutate(assetId);
     };
 
     return (
@@ -62,7 +70,10 @@ const CartItem = React.forwardRef<HTMLDivElement, CartItemProps>(
         {...props}
       >
         <p className="col-span-1 justify-self-center">{index + 1}</p>
-        <Link to={`/asset/${id}`} className="col-span-2 justify-self-start">
+        <Link
+          to={`/asset/${assetId}`}
+          className="col-span-2 justify-self-start"
+        >
           <img
             src={imgPath}
             className="aspect-[320/285] h-full w-20 object-cover"
@@ -82,10 +93,29 @@ const CartItem = React.forwardRef<HTMLDivElement, CartItemProps>(
           />
         </div>
         <p className="col-span-2">{price * quantity} ETH</p>
-        <DeleteIcon
-          className="col-span-1 h-8 w-8 cursor-pointer justify-self-end stroke-gray"
-          onClick={() => mutate({ userId, id })}
-        />
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <DeleteIcon className="col-span-1 h-8 w-8 cursor-pointer justify-self-end stroke-gray" />
+          </AlertDialogTrigger>
+          <AlertDialogContent className="border-0">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete this
+                item from your cart.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDelete}
+                className="bg-purple hover:bg-purple"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     );
   },

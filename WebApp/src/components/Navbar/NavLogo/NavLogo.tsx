@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 
 export default function NavLogo() {
   return (
-    <Link to={"/"} className="flex items-center gap-3 font-mono text-2xl">
-      <StoreFrontIcon className=" fill-purple w-10" />
-      <p className="whitespace-nowrap">NFT Marketplace</p>
+    <Link to={"/"} className="flex items-center gap-3 font-mono">
+      <StoreFrontIcon className="w-10 fill-purple md:w-12 lg:w-14" />
+      <p className="whitespace-nowrap text-2xl md:text-3xl lg:text-4xl">
+        NFT Marketplace
+      </p>
     </Link>
   );
 }

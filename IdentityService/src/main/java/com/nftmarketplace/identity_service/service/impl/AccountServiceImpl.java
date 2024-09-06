@@ -46,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
             requestAccount.setRoles(new HashSet<>(roles));
         }
         Account account = accountRepository.save(requestAccount);
-        sendMessageCreateAccount(AccountMapper.INSTANCE.toAccount(account));
+        sendMessageCreateAccount(AccountMapper.INSTANCE.toCreateAccounKafka(account));
         return account;
     }
 

@@ -1,8 +1,11 @@
 package com.nftmarketplace.asset_elastic_service.model;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -36,14 +39,20 @@ public class Author {
     String bio;
 
     @Field(type = FieldType.Float)
-    Float volumne;
+    Float volumne = (float) 0;
 
-    @Field(type = FieldType.Integer, name = "nft_solds", fielddata = true)
-    Integer nftSolds;
+    @Field(type = FieldType.Integer, name = "nft_solds")
+    Integer nftSolds = 0;
 
     @Field(type = FieldType.Integer)
-    Integer followers;
+    Integer followers = 0;
 
     @Field(type = FieldType.Keyword)
-    Set<String> assetIds;
+    Set<String> assetIds = new HashSet<>();
+
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time, name = "created_at")
+    Date createdAt;
+
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time, name = "updated_at")
+    Date updatedAt;
 }

@@ -2,8 +2,7 @@ import { APIResponse } from "./APIResponse.type";
 
 export interface User {
   id: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   gender: string;
   email: string;
   address: string;
@@ -12,12 +11,12 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   lastLogin: Date;
-  username: string;
   assetIds: string[];
   friendIds: string[];
   followerIds: string[];
 }
 
+// ? Change to form
 export interface UserAsset {
   id: string;
   name: string;
@@ -26,14 +25,10 @@ export interface UserAsset {
   imgPath: string;
 }
 
-export type AddUserAsset = UserAsset & {
-  userId: string;
-};
-
 export type CartUserResponse = APIResponse & {
   result: UserAsset[];
 };
 
-export type UserResponse = APIResponse & {
+export type UserDetailResponse = APIResponse & {
   result: User[];
 };

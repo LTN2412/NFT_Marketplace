@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 import com.nftmarketplace.asset_elastic_service.exception.AppException;
 import com.nftmarketplace.asset_elastic_service.exception.ErrorCode;
 import com.nftmarketplace.asset_elastic_service.model.Author;
+import com.nftmarketplace.asset_elastic_service.model.kafka_model.AssetKafka;
+import com.nftmarketplace.asset_elastic_service.model.kafka_model.AuthorKafka;
+import com.nftmarketplace.asset_elastic_service.model.kafka_model.ChangeAuthorKafka;
 import com.nftmarketplace.asset_elastic_service.repository.AuthorRepository;
 import com.nftmarketplace.asset_elastic_service.service.AuthorService;
+import com.nftmarketplace.asset_elastic_service.utils.mapper.AuthorMapper;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,30 @@ import reactor.core.publisher.Mono;
 public class AuthorServiceImpl implements AuthorService {
 
     AuthorRepository authorRepository;
+
+    @Override
+    public Mono<Void> consumeAuthor(AuthorKafka authorKafka) {
+        return switch (authorKafka.getAction()) {
+            case CREATE, UPDATE -> authorRepository.save(AuthorMapper.INSTANCE.toAuthor(authorKafka)).then();
+            case DELETE -> authorRepository.deleteById(authorKafka.getId());
+            default -> Mono.empty();
+        };
+    }
+
+    @Override
+    public Mono<Void> changeAuthor(ChangeAuthorKafka changeAuthorKafka) {
+        return authorRepository.save(AuthorMapper.INSTANCE.toAuthor(changeAuthorKafka)).then();
+    }
+
+    @Override
+    public Mono<Void> addAsset(AssetKafka assetKafka) {
+        return authorRepository.findById(assetKafka.getAuthorId())
+                .flatMap(author -> {
+                    author.getAssetIds().add(assetKafka.getId());
+                    return authorRepository.save(author);
+                })
+                .then();
+    }
 
     @Override
     public Mono<Author> getAuthor(String authorId) {
@@ -43,7 +71,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Flux<Author> getTopAuthors(Integer limit) {
         return authorRepository
-                .findTopAuthorByVolumne(PageRequest.of(0, limit, Sort.by(new Order(Direction.DESC, "volumne"))));
+                .findAll(PageRequest.of(0, limit, Sort.by(new Order(Direction.DESC, "volumne"))));
     }
 
     @Override

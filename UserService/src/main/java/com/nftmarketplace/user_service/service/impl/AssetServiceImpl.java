@@ -7,7 +7,7 @@ import com.nftmarketplace.user_service.exception.ErrorCode;
 import com.nftmarketplace.user_service.model.dto.request.AssetRequest;
 import com.nftmarketplace.user_service.model.node.Asset;
 import com.nftmarketplace.user_service.repository.AssetRepository;
-import com.nftmarketplace.user_service.service.AssetService;
+import com.nftmarketplace.user_service.service.CartService;
 import com.nftmarketplace.user_service.service.UserService;
 import com.nftmarketplace.user_service.utils.mapper.AssetMapper;
 
@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AssetServiceImpl implements AssetService {
+public class AssetServiceImpl implements CartService {
     AssetRepository assetRepository;
     UserService userService;
 

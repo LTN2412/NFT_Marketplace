@@ -1,11 +1,12 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import RankingList from "../RankingList/RankingList";
 
 export default function TabBar() {
   return (
     <div>
       <Tabs defaultValue="1d" className="border-t border-gray bg-background">
-        <TabsList className="h-20 w-full px-10 md:px-16 lg:px-24">
+        <TabsList className="h-20 w-full px-5 md:px-12 lg:px-24">
           <TabsTrigger
             value="1d"
             className="w-1/3 pb-5 text-gray data-[state=active]:border-b-2 data-[state=active]:border-lightGray"
@@ -34,9 +35,15 @@ export default function TabBar() {
         <TabsContent value="1d">
           <RankingList />
         </TabsContent>
-        <TabsContent value="7d"></TabsContent>
-        <TabsContent value="30d"></TabsContent>
-        <TabsContent value="All Time"></TabsContent>
+        <TabsContent value="7d">
+          <RankingList />
+        </TabsContent>
+        <TabsContent value="30d">
+          <RankingList />
+        </TabsContent>
+        <TabsContent value="All Time">
+          <RankingList />
+        </TabsContent>
       </Tabs>
     </div>
   );

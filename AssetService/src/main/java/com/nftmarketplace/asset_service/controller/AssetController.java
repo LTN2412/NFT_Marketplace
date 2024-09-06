@@ -5,9 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nftmarketplace.asset_service.model.Asset;
 import com.nftmarketplace.asset_service.model.dto.APIResponse;
 import com.nftmarketplace.asset_service.model.dto.request.AssetRequest;
-import com.nftmarketplace.asset_service.model.dto.response.AssetsPageable;
+import com.nftmarketplace.asset_service.model.dto.response.AssetCard;
 import com.nftmarketplace.asset_service.model.dto.response.AssetFlat;
-import com.nftmarketplace.asset_service.model.dto.response.AssetInfo;
 import com.nftmarketplace.asset_service.service.AssetService;
 import com.nftmarketplace.asset_service.utils.mapper.AssetMapper;
 
@@ -16,11 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,6 +26,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -40,46 +38,50 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class AssetController {
     AssetService assetService;
 
-    @PostMapping("")
-    public APIResponse<Asset> createAsset(@RequestBody AssetRequest request) {
+    @PostMapping
+    public APIResponse<Asset> createAsset(@ModelAttribute AssetRequest request) {
         Asset asset = assetService.createAsset(request);
         return APIResponse.<Asset>builder()
                 .result(asset)
                 .build();
     }
 
-    @Cacheable(value = "asset", key = "#id")
-    @GetMapping("")
-    public APIResponse<AssetInfo> getAsset(@RequestParam String id) {
-        AssetInfo getAsset = assetService.getAssetId(id);
-        return APIResponse.<AssetInfo>builder()
-                .result(getAsset)
+    @Cacheable(value = "asset", key = "#assetId")
+    @GetMapping
+    public APIResponse<AssetFlat> getAssetFlat(@RequestParam String assetId) {
+        AssetFlat assetFlat = assetService.getAssetFlat(assetId);
+        return APIResponse.<AssetFlat>builder()
+                .result(assetFlat)
                 .build();
     }
 
     @GetMapping("/all")
-    public APIResponse<Set<AssetFlat>> getAllAssets() {
-        Set<Asset> allAssets = assetService.getAllAssets();
-        Set<AssetFlat> assetsFlat = AssetMapper.INSTANCE.toAssetsFlat(allAssets);
-        return APIResponse.<Set<AssetFlat>>builder()
-                .result(assetsFlat)
+    public APIResponse<List<AssetFlat>> getAllAssets() {
+        List<Asset> allAssets = assetService.getAllAssets();
+        List<AssetFlat> AllAssetsFlat = AssetMapper.INSTANCE.toAssetFlatList(allAssets);
+        return APIResponse.<List<AssetFlat>>builder()
+                .result(AllAssetsFlat)
                 .build();
     }
 
     @Cacheable(value = "assets", key = "#offset+'|'+#limit")
     @GetMapping("/page")
-    public APIResponse<List<AssetsPageable>> getAssetsPageable(@RequestParam int offset, @RequestParam int limit) {
-        Page<AssetsPageable> assetsPageable = assetService.getAssetsPageable(offset, limit);
-        return APIResponse.<List<AssetsPageable>>builder()
+    public APIResponse<List<AssetCard>> getAssetsPageable(@RequestParam Integer offset, @RequestParam Integer limit) {
+        Page<AssetCard> assetsPageable = assetService.getAssetCardsPageable(offset, limit);
+        return APIResponse.<List<AssetCard>>builder()
                 .totalElement(assetsPageable.getTotalElements())
                 .totalPage(assetsPageable.getTotalPages())
                 .result(assetsPageable.getContent())
                 .build();
     }
 
-    @PutMapping("")
-    public APIResponse<Asset> updateAsset(@RequestParam String id, @RequestBody AssetRequest request) {
-        Asset updateAsset = assetService.updateAsset(id, request);
+    @Caching(evict = {
+            @CacheEvict(value = "assets", allEntries = true),
+            @CacheEvict(value = "asset", key = "#assetId")
+    })
+    @PutMapping
+    public APIResponse<Asset> updateAsset(@RequestParam String assetId, @ModelAttribute AssetRequest request) {
+        Asset updateAsset = assetService.updateAsset(assetId, request);
         return APIResponse.<Asset>builder()
                 .result(updateAsset)
                 .build();
@@ -87,11 +89,11 @@ public class AssetController {
 
     @Caching(evict = {
             @CacheEvict(value = "assets", allEntries = true),
-            @CacheEvict(value = "asset", key = "#id")
+            @CacheEvict(value = "asset", key = "#assetId")
     })
-    @DeleteMapping("")
-    public APIResponse<Void> deleteAsset(@RequestParam String id) {
-        assetService.deleteAsset(id);
+    @DeleteMapping
+    public APIResponse<Void> deleteAsset(@RequestParam String assetId) {
+        assetService.deleteAsset(assetId);
         return APIResponse.<Void>builder()
                 .message("Delete completed!")
                 .build();

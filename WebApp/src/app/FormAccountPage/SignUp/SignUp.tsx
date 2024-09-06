@@ -1,22 +1,23 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { Link, useNavigate } from "react-router-dom";
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { FormDataSignUp, SignUpSchema } from "@/types/schema/SignUp";
-
-import { CreateAccountAPI } from "@/apis/query/AccountAPI";
-
-import UserIccon from "@/assets/User.svg?react";
+import { CreateAccountAPI, FetchTokenAPI } from "@/apis/query/AccountAPI";
 import EmailIcon from "@/assets/Email.svg?react";
 import LockIccon from "@/assets/Lock.svg?react";
+import UserIccon from "@/assets/User.svg?react";
+import { FormDataSignIn } from "@/types/schema/SignInSchema";
+import { FormDataSignUp, SignUpSchema } from "@/types/schema/SignUpSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function SignUp() {
   const {
     register,
+    getValues,
     handleSubmit,
     formState: { errors },
     setError,
@@ -29,78 +30,106 @@ export default function SignUp() {
     },
     resolver: zodResolver(SignUpSchema),
   });
-  const [isPending, isTransition] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  const navigate = useNavigate();
 
-  const { mutate } = useMutation({
+  const createAccountMutation = useMutation({
     mutationFn: (data: FormDataSignUp) => CreateAccountAPI(data),
-    onMutate: () => isTransition(true),
-    onSettled: () => isTransition(false),
+    onMutate: () => setIsPending(true),
+    onSettled: () => setIsPending(false),
     onSuccess: () => {
-      alert("Success");
-      window.location.href = "/";
+      // After successful account creation, fetch the token
+      const { username, password } = getValues();
+      fetchTokenMutation.mutate({ username, password });
     },
     onError: (error) => {
       console.log(error);
+      setError("root", {
+        message: "Failed to create account. Please try again.",
+      });
+    },
+  });
+
+  const fetchTokenMutation = useMutation({
+    mutationFn: (data: FormDataSignIn) => FetchTokenAPI(data),
+    onSuccess: () => {
+      navigate("/info");
+    },
+    onError: (error) => {
+      console.log(error);
+      setError("root", {
+        message:
+          "Account created, but failed to sign in. Please try signing in manually.",
+      });
     },
   });
 
   const onSubmit = (formData: FormDataSignUp) => {
-    if (formData.password != formData.verifyPassword) {
+    if (formData.password !== formData.verifyPassword) {
       setError("verifyPassword", {
-        message: "Password didn't match",
+        message: "Passwords don't match",
       });
     } else {
-      mutate(formData);
+      createAccountMutation.mutate(formData);
     }
   };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-2 bg-background text-black">
-        <Input
-          placeholder="Username"
-          StartIcon={<UserIccon className="ml-4 w-8 fill-gray" />}
-          className="h-14 w-80 rounded-3xl pl-14"
-          {...register("username")}
-        />
-        <p className="text-purple">{errors.username?.message}</p>
-        <Input
-          type="email"
-          placeholder="Email Address"
-          StartIcon={<EmailIcon className="ml-4 w-8 fill-gray" />}
-          className="h-14 w-80 rounded-3xl pl-14"
-          {...register("email")}
-        />
-        <p className="text-purple">{errors.email?.message}</p>
-        <Input
-          type="password"
-          placeholder="Password"
-          StartIcon={<LockIccon className="ml-4 w-8 fill-gray" />}
-          className="h-14 w-80 rounded-3xl pl-14"
-          {...register("password")}
-        />
-        <p className="text-purple">{errors.password?.message}</p>
-        <Input
-          type="password"
-          placeholder="Verify Password"
-          StartIcon={<LockIccon className="ml-4 w-8 fill-gray" />}
-          className="h-14 w-80 rounded-3xl pl-14"
-          {...register("verifyPassword")}
-        />
-        <p className="text-purple">{errors.verifyPassword?.message}</p>
-        <Button
-          type="submit"
-          className={`hover: h-14 w-80 rounded-3xl bg-purple hover:bg-purple ${isPending ? "bg-red-600" : ""}`}
-        >
-          Create Account
-        </Button>
-        <p className="text-foreground">
-          {"Have account? "}
-          <Link to={"../signin"} className="text-purple">
-            Sign in
-          </Link>
-          {" now"}
-        </p>
-      </div>
-    </form>
+    <div className="flex flex-col gap-5 px-12 py-6">
+      <h3>Create Account</h3>
+      <p>
+        Welcome! enter your details and start creating, collecting and selling
+        NFTs.
+      </p>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-col gap-3 bg-background text-black lg:w-80">
+          <Input
+            placeholder="Username"
+            StartIcon={<UserIccon className="ml-4 w-8 fill-gray" />}
+            className="h-14 rounded-3xl pl-14"
+            {...register("username")}
+          />
+          <p className="text-purple">{errors.username?.message}</p>
+          <Input
+            type="email"
+            placeholder="Email Address"
+            StartIcon={<EmailIcon className="ml-4 w-8 fill-gray" />}
+            className="h-14 rounded-3xl pl-14"
+            {...register("email")}
+          />
+          <p className="text-purple">{errors.email?.message}</p>
+          <Input
+            type="password"
+            placeholder="Password"
+            StartIcon={<LockIccon className="ml-4 w-8 fill-gray" />}
+            className="h-14 rounded-3xl pl-14"
+            {...register("password")}
+          />
+          <p className="text-purple">{errors.password?.message}</p>
+          <Input
+            type="password"
+            placeholder="Verify Password"
+            StartIcon={<LockIccon className="ml-4 w-8 fill-gray" />}
+            className="h-14 rounded-3xl pl-14"
+            {...register("verifyPassword")}
+          />
+          <p className="text-purple">{errors.verifyPassword?.message}</p>
+          <Button
+            type="submit"
+            className={`hover: h-14 rounded-3xl bg-purple hover:bg-purple ${isPending ? "scale-95 opacity-80" : ""}`}
+          >
+            Create Account
+          </Button>
+          <p className="text-purple">{errors.root?.message}</p>
+          <p className="font-semibold text-foreground">
+            {"Have account? "}
+            <Link to={"../signin"} className="text-purple">
+              Sign in
+            </Link>
+            {" now"}
+          </p>
+        </div>
+      </form>
+    </div>
   );
 }

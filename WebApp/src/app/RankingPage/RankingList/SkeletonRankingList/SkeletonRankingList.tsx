@@ -13,7 +13,7 @@ export default function SkeletonRankingList({
         <p className="col-span-1 justify-self-center">#</p>
         <p className="col-span-4">Artists</p>
         <p className="col-span-2 max-md:hidden">Change</p>
-        <p className="col-span-2 max-lg:hidden">NFTs Sold</p>
+        <p className="col-span-2 max-lg:hidden ">NFTs Sold</p>
         <p className="col-span-2">Volumne</p>
       </div>
       <ul className="flex flex-col gap-4">

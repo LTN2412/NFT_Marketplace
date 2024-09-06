@@ -1,18 +1,17 @@
 import { Outlet } from "react-router-dom";
-import HeadLine from "./HeadLine/HeadLine";
-import Navbar from "@/components/Navbar/Navbar";
+
 import Footer from "@/components/Footer/Footer";
+import Navbar from "@/components/Navbar/Navbar";
 
 export default function FormAccountPage() {
   return (
-    <div>
+    <div className="pt-[70px] lg:pt-[100px]">
       <Navbar />
-      <div className="flex w-full border-b bg-background ">
-        <div className="">
-          <img className="object-cover" src={"/ImageAccount.png"}></img>
+      <div className="flex w-full flex-col border-b bg-background md:flex-row">
+        <div>
+          <img className="object-contain" src={"/ImageAccount.png"}></img>
         </div>
-        <div className=" w-1/2 pl-24">
-          <HeadLine />
+        <div className="flex flex-col max-sm:items-center">
           <Outlet />
         </div>
       </div>

@@ -1,9 +1,10 @@
 import { GetTopAuthors } from "@/apis/query-options/AuthorQuery";
+import ErrorPage from "@/app/ErrorPage/ErrorPage";
+import { useQuery } from "@tanstack/react-query";
+import { random } from "lodash";
+
 import CardCreator from "./CardCreator/CardCreator";
 import SkeletonRankingList from "./SkeletonRankingList/SkeletonRankingList";
-import { useQuery } from "@tanstack/react-query";
-import ErrorPage from "@/app/ErrorPage/ErrorPage";
-import { random } from "lodash";
 
 export default function RankingList() {
   const limit = 5;

@@ -7,11 +7,12 @@ export interface Asset {
   description: string;
   price: number;
   highestBid: number;
+  tags: string[];
   authorId: string;
   authorAvatarPath: string;
   authorName: string;
-  timestampCreate: string;
-  tags: string[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type AssetCardsResponse = APIResponse & {
@@ -20,8 +21,4 @@ export type AssetCardsResponse = APIResponse & {
 
 export type AssetDetailResponse = APIResponse & {
   result: Asset;
-};
-
-export type CountAssetsResponse = APIResponse & {
-  result: number;
 };

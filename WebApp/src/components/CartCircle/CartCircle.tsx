@@ -12,12 +12,12 @@ export interface CratCircleProps extends HTMLAttributes<HTMLDivElement> {}
 const CartCircle = React.forwardRef<HTMLDivElement, CratCircleProps>(
   ({ className, ...props }, ref) => {
     const { data } = useQuery(GetCartUserById());
-    const numberAssets = data?.data.result.length || 0;
+    const numberAssets = data?.data.result.length || null;
     return (
       <Link to={"/cart"} className="fixed bottom-3 left-3">
         <div
           className={cn(
-            "relative flex h-14 w-14 cursor-pointer justify-center rounded-full border-2 border-gray bg-gray p-2",
+            "relative z-40 flex h-14 w-14 cursor-pointer justify-center rounded-full border-2 border-gray bg-gray p-2",
             className,
           )}
           ref={ref}

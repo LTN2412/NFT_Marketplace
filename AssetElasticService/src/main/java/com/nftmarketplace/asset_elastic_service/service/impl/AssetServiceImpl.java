@@ -6,9 +6,12 @@ import org.springframework.stereotype.Service;
 import com.nftmarketplace.asset_elastic_service.exception.AppException;
 import com.nftmarketplace.asset_elastic_service.exception.ErrorCode;
 import com.nftmarketplace.asset_elastic_service.model.Asset;
+import com.nftmarketplace.asset_elastic_service.model.kafka_model.AssetKafka;
+import com.nftmarketplace.asset_elastic_service.model.kafka_model.CommentKafka;
 import com.nftmarketplace.asset_elastic_service.repository.AssetRepository;
 import com.nftmarketplace.asset_elastic_service.service.AssetService;
 import com.nftmarketplace.asset_elastic_service.service.AuthorService;
+import com.nftmarketplace.asset_elastic_service.utils.mapper.AssetMapper;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,25 @@ public class AssetServiceImpl implements AssetService {
 
     AssetRepository assetRepository;
     AuthorService authorService;
+
+    @Override
+    public Mono<Void> consumeAsset(AssetKafka assetKafka) {
+        return switch (assetKafka.getAction()) {
+            case CREATE, UPDATE -> assetRepository.save(AssetMapper.INSTANCE.toAsset(assetKafka)).then();
+            case DELETE -> assetRepository.deleteById(assetKafka.getId());
+            default -> Mono.empty();
+        };
+    }
+
+    @Override
+    public Mono<Void> addComment(CommentKafka commentKafka) {
+        return assetRepository.findById(commentKafka.getAssetId())
+                .flatMap(asset -> {
+                    asset.getCommentIds().add(commentKafka.getId());
+                    return assetRepository.save(asset);
+                })
+                .then();
+    }
 
     @Override
     public Mono<Asset> getAsset(String assetId) {

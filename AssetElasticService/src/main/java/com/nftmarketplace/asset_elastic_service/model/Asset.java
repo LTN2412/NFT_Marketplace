@@ -1,6 +1,7 @@
 package com.nftmarketplace.asset_elastic_service.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
@@ -31,9 +32,6 @@ public class Asset {
     @Field(type = FieldType.Text)
     String description;
 
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time, name = "timestamp_create")
-    Date timestampCreate;
-
     @Field(type = FieldType.Text)
     Set<String> tags;
 
@@ -49,9 +47,20 @@ public class Asset {
     @Field(type = FieldType.Keyword, name = "author_id")
     String authorId;
 
+    // *Author property
     @Field(type = FieldType.Text, name = "author_name")
     String authorName;
 
+    // *Author property
     @Field(type = FieldType.Keyword, name = "author_avatar_path", index = false)
     String authorAvatarPath;
+
+    @Field(type = FieldType.Keyword)
+    Set<String> commentIds = new HashSet<>();
+
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time, name = "created_at")
+    Date createdAt;
+
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time, name = "updated_at")
+    Date updatedAt;
 }

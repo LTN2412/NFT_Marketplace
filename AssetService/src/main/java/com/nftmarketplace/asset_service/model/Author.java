@@ -1,5 +1,6 @@
 package com.nftmarketplace.asset_service.model;
 
+import java.util.Date;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -29,7 +30,7 @@ public class Author {
     @Id
     String id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     String name;
 
     @Column(name = "avatar_path")
@@ -45,7 +46,16 @@ public class Author {
 
     Long followers;
 
+    @Column(columnDefinition = "TEXT")
     String bio;
+
+    @Builder.Default
+    @Column(updatable = false, name = "created_at")
+    Date createdAt = new Date();
+
+    @Builder.Default
+    @Column(name = "updated_at")
+    Date updatedAt = new Date();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "author_id")

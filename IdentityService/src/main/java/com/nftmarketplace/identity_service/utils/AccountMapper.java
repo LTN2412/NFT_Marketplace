@@ -10,6 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import com.nftmarketplace.identity_service.model.Account;
@@ -17,26 +18,18 @@ import com.nftmarketplace.identity_service.model.Role;
 import com.nftmarketplace.identity_service.model.dto.request.AccountRequest;
 import com.nftmarketplace.identity_service.model.kafka_model.CreateAccountKafka;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AccountMapper {
     AccountMapper INSTANCE = Mappers.getMapper(AccountMapper.class);
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "roles", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
     Account toAccount(AccountRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "username", ignore = true)
-    @Mapping(target = "password", ignore = true)
     @Mapping(target = "roles", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
     Account toAccount(AccountRequest request, @MappingTarget Account account);
 
-    CreateAccountKafka toAccount(Account account);
+    CreateAccountKafka toCreateAccounKafka(Account account);
 
     default Set<String> getRoles(Set<Role> roles) {
         return roles.stream().map(Role::getName).collect(Collectors.toSet());

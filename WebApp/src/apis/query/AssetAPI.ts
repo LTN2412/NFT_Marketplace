@@ -1,8 +1,6 @@
-import {
-  AssetDetailResponse,
-  AssetCardsResponse,
-  CountAssetsResponse,
-} from "@/types/Asset.type";
+import { CountResponse } from "@/types/APIResponse.type";
+import { AssetCardsResponse, AssetDetailResponse } from "@/types/Asset.type";
+
 import { httpElastic } from "@/utils/Http";
 
 export const FetchAssetsPageableAPI = async (offset: number, limit: number) => {
@@ -35,12 +33,12 @@ export const FetchAllAssetFrom1AuthorAPI = async (
 };
 
 export const FetchAllAssetsByTagAPI = async (
-  nameTag: string,
+  tagName: string,
   limit: number,
 ) => {
   return httpElastic.get<AssetCardsResponse>("/asset/byTag", {
     params: {
-      nameTag: nameTag,
+      tagName: tagName,
       limit: limit,
     },
   });
@@ -56,6 +54,6 @@ export const FetchSearchAssetsAPI = async (query: string, limit: number) => {
   });
 };
 
-export const FetchCountAssets = async () => {
-  return httpElastic.get<CountAssetsResponse>("/asset/count");
+export const FetchCountAssetsAPI = async () => {
+  return httpElastic.get<CountResponse>("/asset/count");
 };

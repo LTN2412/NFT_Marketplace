@@ -87,6 +87,29 @@ body::-webkit-scrollbar {
   h1 {
     @apply flex w-full flex-col bg-background px-10 md:px-16 lg:px-24;
   }
+
+  h3 {
+    @apply text-[38px] font-bold;
+  }
+
+  @screen sm {
+    body {
+      @apply text-sm;
+    }
+  }
+
+  @screen md {
+    body {
+      @apply text-lg;
+    }
+  }
+
+  @screen lg {
+    body {
+      @apply text-xl;
+    }
+  }
+
   /* b {
     @apply whitespace-nowrap text-[43px] font-bold;
   } */

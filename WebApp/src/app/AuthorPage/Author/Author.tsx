@@ -1,34 +1,40 @@
-import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import React, { HTMLAttributes } from "react";
+
+import { GetAuthorDetail } from "@/apis/query-options/AuthorQuery";
+import ErrorPage from "@/app/ErrorPage/ErrorPage";
+import LoadingPage from "@/app/LoadingPage/LoadingPage";
+import GlobalIcon from "@/assets/Global.svg?react";
+import PlusIcon from "@/assets/Plus.svg?react";
+import DiscordIcon from "@/assets/community/DiscordLogo.svg?react";
+import InstagramIcon from "@/assets/community/InstagramLogo.svg?react";
+import TwitterIcon from "@/assets/community/TwitterLogo.svg?react";
+import YoutubeIcon from "@/assets/community/YoutubeLogo.svg?react";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@radix-ui/react-avatar";
-import React, { HTMLAttributes } from "react";
-import GlobalIcon from "@/assets/Global.svg?react";
-import DiscordIcon from "@/assets/community/DiscordLogo.svg?react";
-import YoutubeIcon from "@/assets/community/YoutubeLogo.svg?react";
-import TwitterIcon from "@/assets/community/TwitterLogo.svg?react";
-import InstagramIcon from "@/assets/community/InstagramLogo.svg?react";
-import PlusIcon from "@/assets/Plus.svg?react";
-import { Button } from "@/components/ui/button";
-import FirstCharName from "@/utils/FirstCharName";
-import LoadingPage from "@/app/LoadingPage/LoadingPage";
-import ErrorPage from "@/app/ErrorPage/ErrorPage";
 import { useQuery } from "@tanstack/react-query";
-import { GetAuthorDetail } from "@/apis/query-options/AuthorQuery";
+
+import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+
+import FirstCharName from "@/utils/FirstCharName";
 
 export interface AuthorProps extends HTMLAttributes<HTMLDivElement> {
-  id: string;
+  authorId: string;
 }
 
 const Author = React.forwardRef<HTMLDivElement, AuthorProps>(
-  ({ className, id, ...props }, ref) => {
-    const { data, isLoading, isError } = useQuery(GetAuthorDetail(id));
+  ({ className, authorId, ...props }, ref) => {
+    const { data, isLoading, isError } = useQuery(GetAuthorDetail(authorId));
     if (isLoading) return <LoadingPage />;
     if (isError) return <ErrorPage />;
     const author = data!.data.result;
     return (
       <div className={cn(className, "bg-background")} ref={ref} {...props}>
         <div className="relative">
-          <img className="aspect-[7/3] object-cover" src={"/Cover.png"}></img>
+          <img
+            className="h-[300px] w-full object-cover"
+            src={"/Cover.png"}
+          ></img>
           <div className="h-[60px]"></div>
           <Avatar className="absolute bottom-0 left-[10%] max-sm:left-1/2 max-sm:-translate-x-1/2">
             <AvatarImage

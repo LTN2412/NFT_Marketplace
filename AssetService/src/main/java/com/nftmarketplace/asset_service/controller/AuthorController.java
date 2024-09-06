@@ -15,13 +15,13 @@ import lombok.experimental.FieldDefaults;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AuthorController {
     AuthorService authorService;
 
-    @PostMapping("")
+    @PostMapping
     public APIResponse<Author> createAuthor(@ModelAttribute AuthorRequest request) {
         Author author = authorService.createAuthor(request);
         return APIResponse.<Author>builder()
@@ -42,37 +42,38 @@ public class AuthorController {
                 .build();
     }
 
-    @Cacheable(value = "author", key = "#id")
-    @GetMapping("")
-    public APIResponse<AuthorFlat> getAuthor(@RequestParam String id) {
-        AuthorFlat author = AuthorMapper.INSTANCE.toAuthorFlat(authorService.getAuthor(id));
+    @Cacheable(value = "author", key = "#authorId")
+    @GetMapping
+    public APIResponse<AuthorFlat> getAuthorId(@RequestParam String authorId) {
+        AuthorFlat authorFlat = authorService.getAuthorFlat(authorId);
         return APIResponse.<AuthorFlat>builder()
-                .result(author)
+                .result(authorFlat)
                 .build();
     }
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @GetMapping("/all")
-    public APIResponse<Set<AuthorFlat>> getAllAuthors() {
-        Set<Author> authors = authorService.getAllAuthors();
-        Set<AuthorFlat> authorsFlat = AuthorMapper.INSTANCE.toAuthorsFlat(authors);
-        return APIResponse.<Set<AuthorFlat>>builder()
+    public APIResponse<List<AuthorFlat>> getAllAuthors() {
+        List<Author> authors = authorService.getAllAuthors();
+        List<AuthorFlat> authorsFlat = AuthorMapper.INSTANCE.toAuthorFlatList(authors);
+        return APIResponse.<List<AuthorFlat>>builder()
                 .result(authorsFlat)
                 .build();
     }
 
-    @CacheEvict(value = "author", key = "#id")
-    @PutMapping("")
-    public APIResponse<Author> updateAuthor(@RequestParam String id, @RequestBody AuthorRequest request) {
-        Author updateAuthor = authorService.updateAuthor(id, request);
+    @CacheEvict(value = "author", key = "#authorId")
+    @PutMapping
+    public APIResponse<Author> updateAuthor(@RequestParam String authorId, @ModelAttribute AuthorRequest request) {
+        Author updateAuthor = authorService.updateAuthor(authorId, request);
         return APIResponse.<Author>builder()
                 .result(updateAuthor)
                 .build();
     }
 
-    @CacheEvict(value = "author", key = "#id")
-    @DeleteMapping("")
-    public APIResponse<Void> deleteAuthor(@RequestParam String id) {
-        authorService.deleteAuthor(id);
+    @CacheEvict(value = "author", key = "#authorId")
+    @DeleteMapping
+    public APIResponse<Void> deleteAuthor(@RequestParam String authorId) {
+        authorService.deleteAuthor(authorId);
         return APIResponse.<Void>builder()
                 .message("Delete completed!")
                 .build();

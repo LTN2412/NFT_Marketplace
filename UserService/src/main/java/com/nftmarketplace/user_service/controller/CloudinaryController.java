@@ -23,7 +23,7 @@ public class CloudinaryController {
     CloudinaryService cloudinaryService;
 
     @PostMapping("/avatarPath")
-    public Mono<String> createAvatarPath(@AuthenticationPrincipal Jwt jwt, @RequestPart Mono<FilePart> avatar) {
-        return cloudinaryService.createAvatarPath(avatar, jwt.getSubject());
+    public Mono<String> createImgPath(@AuthenticationPrincipal Jwt jwt, @RequestPart Mono<FilePart> avatar) {
+        return cloudinaryService.createImgPath(avatar, jwt.getSubject());
     }
 }

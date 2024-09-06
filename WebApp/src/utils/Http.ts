@@ -8,14 +8,14 @@ const urlNotification = "http://localhost:8085/notification";
 
 class Http {
   instance: AxiosInstance;
-  constructor(url: string) {
+  constructor(url: string, withCredentials: boolean = true) {
     this.instance = axios.create({
       baseURL: url,
       timeout: 10000,
       headers: {
         "Content-Type": "application/json",
       },
-      withCredentials: true,
+      withCredentials,
     });
     this.instance.interceptors.request.use(async (config) => {
       const accessToken = Cookies.get("accessToken");
@@ -28,7 +28,7 @@ class Http {
 }
 export const httpAccount = new Http(urlAccount).instance;
 
-export const httpElastic = new Http(urlElastic).instance;
+export const httpElastic = new Http(urlElastic, false).instance;
 
 export const httpUser = new Http(urlUser).instance;
 

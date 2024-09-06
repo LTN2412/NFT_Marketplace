@@ -8,11 +8,7 @@ import CartItem from "../CartItem/CartItem";
 import TotalSection from "@/app/CartPage/TotalSection/TotalSection";
 
 export default function ListCartItems() {
-  const mockDataUserId = "91d313d7-6e4a-4164-a846-80379b994794";
-
-  const { data, isLoading, isError } = useQuery(
-    GetCartUserById(mockDataUserId),
-  );
+  const { data, isLoading, isError } = useQuery(GetCartUserById());
   const cartItems = data?.data.result;
   const totalPrice = cartItems?.reduce(
     (total, item) => total + (item.price * item.quantity ?? 0),
@@ -37,13 +33,12 @@ export default function ListCartItems() {
             <li>
               <CartItem
                 key={cartItem.id}
-                id={cartItem.id}
+                assetId={cartItem.id}
                 index={index}
                 name={cartItem.name}
                 price={cartItem.price}
                 quantityDB={cartItem.quantity}
                 imgPath={cartItem.imgPath}
-                userId={mockDataUserId}
               />
             </li>
           ))

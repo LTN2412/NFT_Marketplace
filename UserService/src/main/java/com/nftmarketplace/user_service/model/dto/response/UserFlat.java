@@ -7,22 +7,18 @@ import com.nftmarketplace.user_service.model.enums.Gender;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserFlat {
     String id;
 
-    String firstName;
-
-    String lastName;
+    String name;
 
     Gender gender;
 
@@ -34,13 +30,13 @@ public class UserFlat {
 
     String avatarPath;
 
+    String coverImgPath;
+
     Date createdAt;
 
     Date updatedAt;
 
-    Date lastLogin;
-
-    String username;
+    Boolean isAuthor;
 
     Set<String> friendIds;
 

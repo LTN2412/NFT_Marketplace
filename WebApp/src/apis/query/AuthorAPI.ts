@@ -1,4 +1,5 @@
-import { AuthorDetailResponse, Authors } from "@/types/Author.type";
+import { AuthorDetailResponse, AuthorsResponse } from "@/types/Author.type";
+
 import { httpElastic } from "@/utils/Http";
 
 export const FetchAuthorDetailAPI = async (authorId: string) => {
@@ -10,7 +11,7 @@ export const FetchAuthorDetailAPI = async (authorId: string) => {
 };
 
 export const FetchTopAuthorAPI = async (limit: number) => {
-  return httpElastic.get<Authors>("/author/top", {
+  return httpElastic.get<AuthorsResponse>("/author/top", {
     params: {
       limit: limit,
     },

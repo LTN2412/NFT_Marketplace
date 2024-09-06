@@ -1,22 +1,26 @@
 import { Button } from "@/components/ui/button";
 import RocketLaunchIcon from "@/assets/RocketLaunch.svg?react";
 import ArtistGrid from "./ArtistGrid/ArtistGrid";
+import { Link } from "react-router-dom";
+
 export default function TopCreator() {
   return (
-    <div className="grid h-fit w-full grid-cols-1 items-center gap-10 bg-background px-10 py-[80px] lg:grid-cols-2 lg:px-[100px]">
+    <div className="grid h-fit w-full  items-center gap-10 bg-background px-5 py-[80px] md:px-12 lg:grid-cols-2 lg:px-24">
       <div className="flex flex-col gap-4">
-        <b className="whitespace-nowrap text-[32px] lg:text-[43px]">
+        <b className="whitespace-nowrap text-4xl lg:text-[43px]">
           Top Creators
         </b>
-        <p className="text-[18px]">
+        <p className="text-xl">
           Checkout Top Rated Creators on the NFT Marketplace
         </p>
       </div>
       <ArtistGrid />
-      <Button className="text-md flex w-full items-center gap-2 rounded-2xl border-[2px] border-button bg-background p-5 hover:bg-background hover:opacity-80 lg:order-2 lg:w-fit lg:place-self-end lg:py-7 ">
-        <RocketLaunchIcon className="w-5 fill-current text-foreground" />
-        <p>View Ranking</p>
-      </Button>
+      <Link to={"/ranking"} className="justify-self-end">
+        <Button className="text-md w-full items-center gap-2 rounded-2xl bg-purple py-7 text-xl hover:bg-purple hover:opacity-80 max-lg:flex lg:order-2 lg:w-fit lg:py-7">
+          <RocketLaunchIcon className="w-6 fill-current text-foreground" />
+          <p>View Ranking</p>
+        </Button>
+      </Link>
     </div>
   );
 }

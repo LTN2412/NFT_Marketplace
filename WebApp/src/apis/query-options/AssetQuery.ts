@@ -1,13 +1,13 @@
 import {
-  FetchAssetsPageableAPI,
-  FetchAssetDetailAPI,
   FetchAllAssetFrom1AuthorAPI,
   FetchAllAssetsByTagAPI,
-  FetchCountAssets,
+  FetchAssetDetailAPI,
+  FetchAssetsPageableAPI,
+  FetchCountAssetsAPI,
 } from "@/apis/query/AssetAPI";
 import { queryOptions } from "@tanstack/react-query";
 
-export const GetAssetsPageableAPI = (offset: number, limit: number) => {
+export const GetAssetsPageable = (offset: number, limit: number) => {
   return queryOptions({
     queryKey: ["asset_card", offset],
     queryFn: async () => FetchAssetsPageableAPI(offset, limit),
@@ -45,6 +45,6 @@ export type GetAllAssetsByTagType = typeof GetAllAssetsByTag;
 export const CountAllAssets = () => {
   return queryOptions({
     queryKey: ["assets_count"],
-    queryFn: async () => FetchCountAssets(),
+    queryFn: async () => FetchCountAssetsAPI(),
   });
 };

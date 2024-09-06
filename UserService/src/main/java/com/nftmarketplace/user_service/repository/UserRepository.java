@@ -12,9 +12,6 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface UserRepository extends ReactiveNeo4jRepository<User, String> {
-
-        Mono<Boolean> existsByUsername(String username);
-
         Mono<Boolean> existsByEmail(String email);
 
         Mono<Boolean> existsByPhoneNumber(String phoneNumber);

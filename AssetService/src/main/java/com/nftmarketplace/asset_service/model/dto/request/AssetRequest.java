@@ -18,11 +18,16 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AssetRequest {
     String name;
+
     String description;
-    Set<String> tags;
-    MultipartFile imgAsset;
+
     Float price;
+
     Float highestBid;
-    String imgPath;
+
+    MultipartFile imgAsset;
+
     String authorId;
+
+    Set<String> tags;
 }

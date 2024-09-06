@@ -1,21 +1,33 @@
-import Card from "@/components/Card/Card";
-// import { useAppSelector } from "@/store";
-import { useQueryParams } from "@/utils/Hook";
+import { useEffect, useRef, useState } from "react";
+
+import { GetAssetsPageable } from "@/apis/query-options/AssetQuery";
+import ErrorPage from "@/app/ErrorPage/ErrorPage";
+import { useQueryParams } from "@/hooks/use-query-params";
 import { useQuery } from "@tanstack/react-query";
+
+import Card from "@/components/Card/Card";
+
 import MyPagination from "../MyPagination/MyPagination";
 import SkeletonListCards from "./SkeletonListCards/SkeletonListCards";
 
-import ErrorPage from "@/app/ErrorPage/ErrorPage";
-import { GetAssetsPageableAPI } from "@/apis/query-options/AssetQuery";
-
 export default function ListCards() {
-  // const objectAsset = useAppSelector((state) => state.asset.entities);
-  // const assets = Object.values(objectAsset);
   const queryPrams: { page?: string } = useQueryParams();
   const page = Number(queryPrams.page) || 1;
-  const limit = 15;
+  const [limit, setLimit] = useState<number>();
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (window.innerWidth <= 640) setLimit(5);
+    else if (window.innerWidth <= 1024) setLimit(8);
+    else setLimit(12);
+
+    if (listRef.current) {
+      listRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [page]);
+
   const { data, isLoading, isError } = useQuery(
-    GetAssetsPageableAPI(page, limit),
+    GetAssetsPageable(page, limit!),
   );
   const assets = data?.data.result || Array(limit).fill(0);
   const totalElement = data?.data.totalElement;
@@ -23,7 +35,7 @@ export default function ListCards() {
   if (isLoading) return <SkeletonListCards limit={assets} />;
   if (isError) return <ErrorPage />;
   return (
-    <div>
+    <div ref={listRef}>
       <div className="grid grid-cols-1 justify-center justify-items-center gap-10 bg-background2 px-10 py-12 md:grid-cols-2 lg:grid-cols-3">
         {assets.map((asset) => (
           <Card

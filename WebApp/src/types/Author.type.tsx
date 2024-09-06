@@ -16,6 +16,6 @@ export type AuthorDetailResponse = APIResponse & {
   result: Author;
 };
 
-export type Authors = APIResponse & {
+export type AuthorsResponse = APIResponse & {
   result: Author[];
 };

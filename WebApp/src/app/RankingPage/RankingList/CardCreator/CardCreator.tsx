@@ -1,9 +1,10 @@
 import React from "react";
-import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
-import { Avatar } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+
+import { Avatar } from "@/components/ui/avatar";
 
 import FirstCharName from "@/utils/FirstCharName";
 

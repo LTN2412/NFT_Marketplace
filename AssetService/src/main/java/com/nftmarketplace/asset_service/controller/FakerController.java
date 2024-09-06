@@ -21,8 +21,9 @@ public class FakerController {
     FakerService fakerService;
 
     @GetMapping("/faker")
-    public APIResponse<?> createFakeData(@RequestParam int count) {
-        fakerService.generateFakeData(count);
+    public APIResponse<?> createFakeData(@RequestParam Integer numberAuthor, Integer numberAsset,
+            Integer numberComment) {
+        fakerService.generateFakeData(numberAuthor, numberAsset, numberComment);
         return APIResponse.builder()
                 .message("Create fake data completed!")
                 .build();

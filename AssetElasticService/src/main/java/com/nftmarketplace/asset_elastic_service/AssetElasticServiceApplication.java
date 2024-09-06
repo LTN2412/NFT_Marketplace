@@ -9,5 +9,4 @@ public class AssetElasticServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AssetElasticServiceApplication.class, args);
 	}
-
 }

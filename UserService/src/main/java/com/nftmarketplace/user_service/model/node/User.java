@@ -26,11 +26,8 @@ public class User {
     @Id
     String id;
 
-    @Property("first_name")
-    String firstName;
-
-    @Property("last_name")
-    String lastName;
+    @Property
+    String name;
 
     @Property
     Gender gender;
@@ -47,17 +44,14 @@ public class User {
     @Property("avatar_path")
     String avatarPath;
 
+    @Property("cover_img_path")
+    String coverImgPath;
+
     @Property("created_at")
     Date createdAt = new Date();
 
     @Property("updated_at")
     Date updatedAt = new Date();
-
-    @Property("last_login")
-    Date lastLogin = new Date();
-
-    @Property
-    String username;
 
     @Property
     Boolean isAuthor = false;
@@ -70,4 +64,7 @@ public class User {
 
     @Relationship(type = "HAS_IN_CART", direction = Relationship.Direction.OUTGOING)
     Set<Asset> assets = new HashSet<>();
+
+    @Relationship(type = "IS_COMMENT", direction = Relationship.Direction.OUTGOING)
+    Set<Comment> comments = new HashSet<>();
 }

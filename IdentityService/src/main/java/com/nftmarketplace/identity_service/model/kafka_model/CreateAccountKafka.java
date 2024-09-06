@@ -19,7 +19,7 @@ public class CreateAccountKafka {
 
     String email;
 
-    String username;
+    Boolean isAuthor;
 
     Set<String> roles;
 }

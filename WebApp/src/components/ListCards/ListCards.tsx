@@ -1,26 +1,34 @@
-import { cn } from "@/lib/utils";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HTMLAttributes } from "react";
-import Card from "../Card/Card";
+
 import {
   GetAllAssetDetailFrom1AuthorType,
   GetAllAssetsByTagType,
 } from "@/apis/query-options/AssetQuery";
-import { useQuery } from "@tanstack/react-query";
-import SkeletonListCards from "@/app/MarketPage/ListCards/SkeletonListCards/SkeletonListCards";
 import ErrorPage from "@/app/ErrorPage/ErrorPage";
+import SkeletonListCards from "@/app/MarketPage/ListCards/SkeletonListCards/SkeletonListCards";
+import { cn } from "@/lib/utils";
 import { Asset } from "@/types/Asset.type";
+import { useQuery } from "@tanstack/react-query";
+
+import Card from "../Card/Card";
 
 export interface ListCardsProps extends HTMLAttributes<HTMLDivElement> {
   queryOption: GetAllAssetDetailFrom1AuthorType | GetAllAssetsByTagType;
   param: string;
-  limit: number;
   cardType?: string;
 }
 
 const ListCards = React.forwardRef<HTMLDivElement, ListCardsProps>(
-  ({ className, queryOption, param, limit, cardType, ...props }, ref) => {
-    const { data, isLoading, isError } = useQuery(queryOption(param, limit));
+  ({ className, queryOption, param, cardType, ...props }, ref) => {
+    const [limit, setLimit] = useState<number>();
+    useEffect(() => {
+      if (window.innerWidth <= 640) setLimit(3);
+      else if (window.innerWidth <= 1024) setLimit(6);
+      else setLimit(9);
+    }, []);
+    const { data, isLoading, isError } = useQuery(queryOption(param, limit!));
+
     if (isLoading) return <SkeletonListCards limit={Array(limit).fill(0)} />;
     if (isError) return <ErrorPage />;
 

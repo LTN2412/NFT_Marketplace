@@ -23,10 +23,6 @@ export interface Message {
   isSeen: boolean;
 }
 
-export type CountMessagesResponse = APIResponse & {
-  result: number;
-};
-
 export type MessagesResponse = APIResponse & {
   result: Message[];
 };

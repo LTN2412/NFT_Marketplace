@@ -19,10 +19,14 @@ import lombok.experimental.FieldDefaults;
 public class APIResponse<T> {
     @Builder.Default
     int code = 100;
+
     @Builder.Default
     Long totalElement = null;
+
     @Builder.Default
     Integer totalPage = null;
+
     String message;
+
     T result;
 }

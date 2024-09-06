@@ -14,12 +14,20 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthorFlat {
     String id;
+
     String name;
+
     String avatarPath;
+
     String coverImgPath;
+
     String bio;
+
     Float volumne;
+
     Long nftSolds;
+
     Long followers;
-    Set<AssetFlat> assets;
+
+    Set<String> assetIds;
 }

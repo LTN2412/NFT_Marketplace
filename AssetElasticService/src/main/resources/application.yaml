@@ -7,4 +7,6 @@ spring:
     ansi:
       enabled: always
   elasticsearch:
-    uris: http://localhost:9200
+    uris: https://4e676d46e34e40cebed51ac817b28782.us-central1.gcp.cloud.es.io:443
+    username: elastic
+    password: qT4CXu7kMZhk4L4TNxKxW84N

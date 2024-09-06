@@ -10,39 +10,32 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import com.nftmarketplace.user_service.model.dto.request.UserRequest;
 import com.nftmarketplace.user_service.model.dto.response.UserFlat;
-import com.nftmarketplace.user_service.model.kafkaModel.CreateAccountKafka;
+import com.nftmarketplace.user_service.model.kafka_model.ChangeAuthorKafka;
+import com.nftmarketplace.user_service.model.kafka_model.CreateAccountKafka;
 import com.nftmarketplace.user_service.model.node.Asset;
 import com.nftmarketplace.user_service.model.node.User;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(target = "avatarPath", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "lastLogin", ignore = true)
-    @Mapping(target = "friends", ignore = true)
-    @Mapping(target = "followers", ignore = true)
-    @Mapping(target = "assets", ignore = true)
     User toUser(UserRequest request);
 
     User toUser(CreateAccountKafka request);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "avatarPath", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "lastLogin", ignore = true)
-    @Mapping(target = "friends", ignore = true)
     @Mapping(target = "followers", ignore = true)
-    @Mapping(target = "assets", ignore = true)
-    User toUSer(UserRequest request, @MappingTarget User user);
+    User toUser(ChangeAuthorKafka request);
+
+    ChangeAuthorKafka toChangeAuthorKafka(UserFlat userFlat);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    User toUser(UserRequest request, @MappingTarget User user);
 
     @Mapping(source = "friends", target = "friendIds")
     @Mapping(source = "followers", target = "followerIds")

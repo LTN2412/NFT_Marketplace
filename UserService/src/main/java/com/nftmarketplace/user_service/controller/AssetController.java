@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nftmarketplace.user_service.model.dto.APIResponse;
 import com.nftmarketplace.user_service.model.dto.request.AssetRequest;
 import com.nftmarketplace.user_service.model.node.Asset;
-import com.nftmarketplace.user_service.service.AssetService;
+import com.nftmarketplace.user_service.service.CartService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AssetController {
-        AssetService assetService;
+        CartService assetService;
 
         @GetMapping
         public Mono<APIResponse<Set<Asset>>> getAllAssetsInCartFrom1User(@AuthenticationPrincipal Jwt jwt) {

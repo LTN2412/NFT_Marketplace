@@ -1,5 +1,6 @@
 package com.nftmarketplace.asset_service.model.dto.response;
 
+import java.util.Date;
 import java.util.Set;
 
 import lombok.AccessLevel;
@@ -14,10 +15,22 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AssetFlat {
     String id;
+
     String name;
+
     String description;
-    String imgPath;
+
     Float price;
+
     Float highestBid;
+
+    String imgPath;
+
+    Date createdAt;
+
+    Date updatedAt;
+
+    String authorId;
+
     Set<String> tags;
 }

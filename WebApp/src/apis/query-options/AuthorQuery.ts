@@ -1,4 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
+
 import { FetchAuthorDetailAPI, FetchTopAuthorAPI } from "../query/AuthorAPI";
 
 export const GetAuthorDetail = (id: string) => {

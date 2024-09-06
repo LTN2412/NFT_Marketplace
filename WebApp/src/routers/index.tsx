@@ -1,14 +1,17 @@
+import { createBrowserRouter } from "react-router-dom";
+
 import AssetDetailPage from "@/app/AssetDetailPage/AssetDetailPage";
 import AuthorPage from "@/app/AuthorPage/AuthorPage";
 import CartPage from "@/app/CartPage/CartPage";
 import FormAccountPage from "@/app/FormAccountPage/FormAccount";
 import SignIn from "@/app/FormAccountPage/SignIn/SignIn";
 import SignUp from "@/app/FormAccountPage/SignUp/SignUp";
+import Info from "@/app/FormAccountPage/UpdateInfo/UpdateInfo";
 import HomePage from "@/app/HomePage/HomePage";
 import MarketPage from "@/app/MarketPage/MarketPage";
+import ProfilePage from "@/app/ProfilePage/ProfilePage";
 import RankingPage from "@/app/RankingPage/RankingPage";
-import TestPage from "@/app/TestPage/TestPage";
-import { createBrowserRouter } from "react-router-dom";
+import WalletPage from "@/app/WalletPage/WalletPage";
 
 const router = createBrowserRouter([
   {
@@ -29,13 +32,13 @@ const router = createBrowserRouter([
     children: [{ path: "/asset/:id", element: null }],
   },
   {
-    path: "/cart",
-    element: <CartPage />,
-  },
-  {
     path: "/author",
     element: <AuthorPage />,
     children: [{ path: "/author/:id", element: null }],
+  },
+  {
+    path: "/cart",
+    element: <CartPage />,
   },
   {
     path: "/ranking",
@@ -46,11 +49,16 @@ const router = createBrowserRouter([
     children: [
       { path: "/signup", element: <SignUp /> },
       { path: "/signin", element: <SignIn /> },
+      { path: "/info", element: <Info /> },
     ],
   },
   {
-    path: "/test",
-    element: <TestPage />,
+    path: "/profile",
+    element: <ProfilePage />,
+  },
+  {
+    path: "/wallet",
+    element: <WalletPage />,
   },
 ]);
 

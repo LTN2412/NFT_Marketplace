@@ -25,6 +25,7 @@ public class AccountRequest {
     @Email
     String email;
 
-    @NotNull
+    Boolean isAuthor = false;
+
     Set<String> roles;
 }

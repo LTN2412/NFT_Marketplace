@@ -32,7 +32,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public Mono<String> createAvatarPath(Mono<FilePart> filePart, String userId) {
+    public Mono<String> createImgPath(Mono<FilePart> filePart, String userId) {
         return convertFilePartToBytes(filePart).flatMap(img -> {
             return Mono.fromCallable(() -> {
                 Map result = cloudinary.uploader().upload(img, ObjectUtils.asMap(

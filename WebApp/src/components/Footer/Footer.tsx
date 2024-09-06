@@ -6,8 +6,8 @@ import { Input } from "../ui/input";
 import Community from "./Community/Community";
 export default function Footer() {
   return (
-    <div>
-      <h1 className="h-full gap-2 py-12 lg:flex-row lg:justify-between">
+    <div className="bg-background px-5 py-12 md:px-12">
+      <div className="flex flex-col gap-2 lg:flex-row lg:justify-between">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-3 font-mono text-2xl">
             <StoreFrontIcon className=" w-10 fill-current text-purple" />
@@ -33,12 +33,12 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 lg:pb-12">
           <p className="text-2xl font-bold">Join Our Weekly Digest</p>
           <p className="text-lightGray">
             Get exclusive promotions & updates straight to your inbox.
           </p>
-          <div className="md: flex flex-col gap-4 md:flex-row md:gap-0">
+          <div className="flex flex-col gap-4 md:flex-row md:gap-0 lg:relative">
             <Input
               type="email"
               placeholder="Enter your email here"
@@ -46,7 +46,7 @@ export default function Footer() {
             />
             <Button
               type="submit"
-              className="flex h-12 w-full items-center justify-center gap-1 rounded-2xl bg-purple hover:bg-purple md:absolute md:left-[300px] md:w-[140px]"
+              className="flex h-12 w-full items-center justify-center gap-1 rounded-2xl bg-purple hover:scale-100 hover:bg-purple hover:opacity-100 md:absolute md:left-[280px] md:w-[140px] lg:left-[260px]"
             >
               <EmailIcon className="w-7 fill-foreground lg:hidden" />
               Subscribe
@@ -56,7 +56,7 @@ export default function Footer() {
             © NFT Marketplace
           </p>
         </div>
-      </h1>
+      </div>
       <div className="w-full border-t border-gray bg-background px-24 py-6 text-lightGray max-lg:hidden">
         © NFT Marketplace LTN
       </div>

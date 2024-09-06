@@ -1,9 +1,10 @@
 package com.nftmarketplace.user_service.model.dto.request;
 
 import org.springframework.data.neo4j.core.schema.Property;
-import org.springframework.http.codec.multipart.FilePart;
 
-import jakarta.validation.constraints.Email;
+import com.nftmarketplace.user_service.model.enums.Gender;
+
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -18,30 +19,20 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequest {
-    @Size(min = 36, max = 36, message = "Not valid UUID")
-    String id;
+    @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
+    String name;
 
-    @Size(min = 2, max = 100, message = "Full name must be between 2 and 100 characters")
-    String firstName;
+    @NotNull
+    Gender gender;
 
-    @Size(min = 2, max = 100, message = "Full name must be between 2 and 100 characters")
-    String lastName;
-
-    String gender;
-
-    @Size(max = 50)
-    @Email(message = "Input must be in Email format")
-    String email;
-
+    @NotNull
     String address;
 
     @Pattern(regexp = "^\\+84[0-9]{9,10}$|^0[0-9]{9,10}$", message = "The phone number is not in the correct format")
     @Size(min = 10, max = 11, message = "Phone number must be between 10 and 11 characters")
     @Property("phone_number")
     String phoneNumber;
+    // FilePart avatarImg;
 
-    FilePart avatarImg;
-
-    @Size(min = 7, max = 100, message = "Username must be between 7 and 100 characters")
-    String username;
+    // FilePart coverImg;
 }

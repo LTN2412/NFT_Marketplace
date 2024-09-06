@@ -1,14 +1,16 @@
-import ListCards from "@/components/ListCards/ListCards";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GetAllAssetDetailFrom1Author } from "@/apis/query-options/AssetQuery";
 import React, { HTMLAttributes } from "react";
 
+import { GetAllAssetDetailFrom1Author } from "@/apis/query-options/AssetQuery";
+
+import ListCards from "@/components/ListCards/ListCards";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 export interface TagBarProps extends HTMLAttributes<HTMLDivElement> {
-  id: string;
+  authorId: string;
 }
 
 const TagBar = React.forwardRef<HTMLDivElement, TagBarProps>(
-  ({ className, id, ...props }, ref) => {
+  ({ className, authorId, ...props }, ref) => {
     return (
       <div className={className} ref={ref} {...props}>
         <Tabs
@@ -38,12 +40,21 @@ const TagBar = React.forwardRef<HTMLDivElement, TagBarProps>(
           <TabsContent value="Created">
             <ListCards
               queryOption={GetAllAssetDetailFrom1Author}
-              param={id}
-              limit={15}
+              param={authorId}
             />
           </TabsContent>
-          <TabsContent value="Owned"></TabsContent>
-          <TabsContent value="Collections" />
+          <TabsContent value="Owned">
+            <ListCards
+              queryOption={GetAllAssetDetailFrom1Author}
+              param={authorId}
+            />
+          </TabsContent>
+          <TabsContent value="Collections">
+            <ListCards
+              queryOption={GetAllAssetDetailFrom1Author}
+              param={authorId}
+            />
+          </TabsContent>
         </Tabs>
       </div>
     );

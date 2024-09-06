@@ -39,9 +39,9 @@ export default function BellMessage() {
     };
   }, [queryClient]);
   return (
-    <div className="relative">
+    <div className="relative lg:order-1">
       <div className="cursor-pointer" onClick={handleToggleMessage}>
-        <BellIcon className="w-8 fill-foreground" />
+        <BellIcon className="w-6 fill-foreground md:w-8 lg:w-10" />
         {numberMessages && (
           <div className="absolute -right-2 -top-2 h-5 w-5 rounded-full bg-purple leading-4">
             {numberMessages}
