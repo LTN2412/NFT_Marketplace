@@ -3,6 +3,7 @@ package com.nftmarketplace.user_service.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nftmarketplace.user_service.model.dto.APIResponse;
+import com.nftmarketplace.user_service.model.dto.request.UpdateUserRequest;
 import com.nftmarketplace.user_service.model.dto.request.UserRequest;
 import com.nftmarketplace.user_service.model.dto.response.UserFlat;
 import com.nftmarketplace.user_service.model.enums.FriendStatus;
@@ -92,7 +93,7 @@ public class UserController {
 
         @PutMapping
         public Mono<APIResponse<UserFlat>> updateUser(@AuthenticationPrincipal Jwt jwt,
-                        @ModelAttribute @Valid UserRequest request) {
+                        @ModelAttribute @Valid UpdateUserRequest request) {
                 return userService.updateUser(jwt.getSubject(), request)
                                 .map(user -> APIResponse
                                                 .<UserFlat>builder()
@@ -156,6 +157,16 @@ public class UserController {
                                 .map(message -> APIResponse
                                                 .builder()
                                                 .message(message)
+                                                .build());
+        }
+
+        @GetMapping("/checkFollower")
+        public Mono<APIResponse<Boolean>> checkFollowerStatus(@AuthenticationPrincipal Jwt jwt,
+                        @RequestParam String userId) {
+                return followerService.checkFollowerStatus(jwt.getSubject(), userId)
+                                .map(result -> APIResponse
+                                                .<Boolean>builder()
+                                                .result(result)
                                                 .build());
         }
 

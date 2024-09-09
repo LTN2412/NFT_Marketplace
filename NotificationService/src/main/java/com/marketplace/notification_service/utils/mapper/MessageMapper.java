@@ -11,7 +11,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 import com.marketplace.notification_service.model.Message;
-import com.marketplace.notification_service.model.kafkaModel.NotificationKafka;
+import com.marketplace.notification_service.model.kafka_model.NotificationKafka;
 
 @Mapper(componentModel = "spring")
 public interface MessageMapper {

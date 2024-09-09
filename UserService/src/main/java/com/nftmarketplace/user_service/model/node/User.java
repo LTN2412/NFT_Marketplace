@@ -53,7 +53,7 @@ public class User {
     @Property("updated_at")
     Date updatedAt = new Date();
 
-    @Property
+    @Property("is_author")
     Boolean isAuthor = false;
 
     @Relationship(type = "IS_FRIEND", direction = Relationship.Direction.OUTGOING)

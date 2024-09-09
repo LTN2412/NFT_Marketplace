@@ -1,10 +1,10 @@
 import { CountResponse } from "@/types/APIResponse.type";
-import { AssetCardsResponse, AssetDetailResponse } from "@/types/Asset.type";
+import { AssetDetailResponse, AssetsResponse } from "@/types/Asset.type";
 
 import { httpElastic } from "@/utils/Http";
 
 export const FetchAssetsPageableAPI = async (offset: number, limit: number) => {
-  return httpElastic.get<AssetCardsResponse>("/asset/page", {
+  return httpElastic.get<AssetsResponse>("/asset/page", {
     params: {
       offset: offset - 1,
       limit: limit,
@@ -24,7 +24,7 @@ export const FetchAllAssetFrom1AuthorAPI = async (
   authorId: string,
   limit: number,
 ) => {
-  return httpElastic.get<AssetCardsResponse>("/asset/fromAuthor", {
+  return httpElastic.get<AssetsResponse>("/asset/fromAuthor", {
     params: {
       authorId: authorId,
       limit: limit,
@@ -36,7 +36,7 @@ export const FetchAllAssetsByTagAPI = async (
   tagName: string,
   limit: number,
 ) => {
-  return httpElastic.get<AssetCardsResponse>("/asset/byTag", {
+  return httpElastic.get<AssetsResponse>("/asset/byTag", {
     params: {
       tagName: tagName,
       limit: limit,
@@ -44,8 +44,14 @@ export const FetchAllAssetsByTagAPI = async (
   });
 };
 
+export const FetchAllAssetsInCart = async (assetIds: string[]) => {
+  return httpElastic.post<AssetsResponse>("/asset/inCart", {
+    assetIds: assetIds,
+  });
+};
+
 export const FetchSearchAssetsAPI = async (query: string, limit: number) => {
-  return httpElastic.get<AssetCardsResponse>("/asset/search", {
+  return httpElastic.get<AssetsResponse>("/asset/search", {
     params: {
       field: "name",
       query: query,

@@ -1,4 +1,8 @@
-import { APIResponse } from "@/types/APIResponse.type";
+import {
+  APIResponse,
+  BooleanResponse,
+  IdsResponse,
+} from "@/types/APIResponse.type";
 import {
   CartUserResponse,
   UserAsset,
@@ -40,6 +44,18 @@ export const DeleteCartItemAPI = async (assetId: string) => {
   });
 };
 
+export const UpdateIsSelectItemAPI = async (
+  assetId: string,
+  isSelect: boolean,
+) => {
+  return httpUser.post<APIResponse>("/asset/select", null, {
+    params: {
+      assetId: assetId,
+      isSelect: isSelect,
+    },
+  });
+};
+
 export const AcceptFriendAPI = async (
   messageId: string,
   userReceiveId: string,
@@ -60,6 +76,34 @@ export const RejectFriendAPI = async (
     params: {
       messageId: messageId,
       userReceiveId: userReceiveId,
+    },
+  });
+};
+
+export const FetchAllFriendsAPI = async () => {
+  return httpUser.get<IdsResponse>("/friends");
+};
+
+export const CheckFollowStatusAPI = async (userId: string) => {
+  return httpUser.get<BooleanResponse>("/checkFollower", {
+    params: {
+      userId: userId,
+    },
+  });
+};
+
+export const AddFollowerAPI = async (userId: string) => {
+  return httpUser.put<APIResponse>("/addFollower", null, {
+    params: {
+      userReceiveId: userId,
+    },
+  });
+};
+
+export const UnFollowerAPI = async (userId: string) => {
+  return httpUser.delete<APIResponse>("/unFollower", {
+    params: {
+      userReceiveId: userId,
     },
   });
 };

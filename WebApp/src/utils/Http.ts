@@ -5,6 +5,7 @@ const urlAccount = "http://localhost:8081";
 const urlElastic = "http://localhost:8083/elastic";
 const urlUser = "http://localhost:8084/user";
 const urlNotification = "http://localhost:8085/notification";
+const orderNotification = "http://localhost:8086/order";
 
 class Http {
   instance: AxiosInstance;
@@ -33,3 +34,5 @@ export const httpElastic = new Http(urlElastic, false).instance;
 export const httpUser = new Http(urlUser).instance;
 
 export const httpNotification = new Http(urlNotification).instance;
+
+export const httpOrder = new Http(orderNotification).instance;

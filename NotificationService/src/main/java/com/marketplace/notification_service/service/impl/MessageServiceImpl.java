@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.marketplace.notification_service.exception.AppException;
 import com.marketplace.notification_service.exception.ErrorCode;
 import com.marketplace.notification_service.model.Message;
-import com.marketplace.notification_service.model.kafkaModel.NotificationKafka;
+import com.marketplace.notification_service.model.kafka_model.NotificationKafka;
 import com.marketplace.notification_service.repository.MessageRepository;
 import com.marketplace.notification_service.service.MessageService;
 import com.marketplace.notification_service.utils.mapper.MessageMapper;

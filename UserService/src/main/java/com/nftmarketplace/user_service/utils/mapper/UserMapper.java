@@ -13,6 +13,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+import com.nftmarketplace.user_service.model.dto.request.UpdateUserRequest;
 import com.nftmarketplace.user_service.model.dto.request.UserRequest;
 import com.nftmarketplace.user_service.model.dto.response.UserFlat;
 import com.nftmarketplace.user_service.model.kafka_model.ChangeAuthorKafka;
@@ -27,6 +28,8 @@ public interface UserMapper {
 
     User toUser(UserRequest request);
 
+    User toUser(UpdateUserRequest request);
+
     User toUser(CreateAccountKafka request);
 
     @Mapping(target = "followers", ignore = true)
@@ -35,7 +38,7 @@ public interface UserMapper {
     ChangeAuthorKafka toChangeAuthorKafka(UserFlat userFlat);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    User toUser(UserRequest request, @MappingTarget User user);
+    User toUser(UpdateUserRequest request, @MappingTarget User user);
 
     @Mapping(source = "friends", target = "friendIds")
     @Mapping(source = "followers", target = "followerIds")

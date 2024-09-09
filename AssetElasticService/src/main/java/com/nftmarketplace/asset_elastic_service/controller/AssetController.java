@@ -5,12 +5,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nftmarketplace.asset_elastic_service.model.Asset;
 import com.nftmarketplace.asset_elastic_service.model.dto.APIResponse;
+import com.nftmarketplace.asset_elastic_service.model.dto.request.AssetsInCartRequest;
 import com.nftmarketplace.asset_elastic_service.service.AssetService;
 
 import lombok.AccessLevel;
@@ -47,7 +50,8 @@ public class AssetController {
         @GetMapping(path = "/page")
         public Mono<APIResponse<Set<Asset>>> getAllAssetsPageable(@RequestParam Integer offset, Integer limit) {
                 return Mono.zip(assetService.getAssetsPageable(offset, limit)
-                                .collect(Collectors.toSet()), assetService.countAllAssets()).flatMap(tuple -> {
+                                .collect(Collectors.toSet()),
+                                assetService.countAllAssets()).flatMap(tuple -> {
                                         return Mono.just(APIResponse
                                                         .<Set<Asset>>builder()
                                                         .result(tuple.getT1())
@@ -75,6 +79,20 @@ public class AssetController {
                                                 .<Set<Asset>>builder()
                                                 .result(asset)
                                                 .build());
+        }
+
+        @PostMapping("/inCart")
+        public Mono<APIResponse<Set<Asset>>> getAllAssetsInCart(@RequestBody AssetsInCartRequest request) {
+                return assetService.getAllAssetsById(request.getAssetIds())
+                                .collect(Collectors.toSet())
+                                .map(asset -> APIResponse
+                                                .<Set<Asset>>builder()
+                                                .result(asset)
+                                                .build());
+        }
+
+        public String getMethodName(@RequestParam String param) {
+                return new String();
         }
 
         @GetMapping(path = "/search")

@@ -88,6 +88,12 @@ public class IdentityServiceImpl implements IdentityService {
             tokenCookie.setMaxAge(3600);
             tokenCookie.setPath("/");
             response.addCookie(tokenCookie);
+            Cookie userIdCookie = new Cookie("userId", account.getId());
+            userIdCookie.setHttpOnly(false);
+            userIdCookie.setSecure(true);
+            userIdCookie.setMaxAge(3600);
+            userIdCookie.setPath("/");
+            response.addCookie(userIdCookie);
             return "Sign in successfully";
         } catch (JOSEException e) {
             throw new AppException(ErrorCode.CAN_NOT_CREATE_TOKEN);

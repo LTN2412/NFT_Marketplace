@@ -1,4 +1,5 @@
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
+
 export default function ArtistGrid() {
   return (
     <div className="grid grid-cols-1 gap-4 lg:order-3 lg:col-span-2 lg:grid-cols-4">
@@ -19,7 +20,7 @@ export default function ArtistGrid() {
             <p className="max-md:hidden">
               NFT Solds:<b> 999</b>
             </p>
-            <p>
+            <p className="text-nowrap">
               Volumne:<b> 9999</b>
             </p>
           </div>

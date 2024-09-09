@@ -37,9 +37,7 @@ const AssetDetail = React.forwardRef<HTMLDivElement, AssetDetailProps>(
     const { toast } = useToast();
     const { data, isError, isLoading } = useQuery(GetAssetDetail(assetId));
     const { mutate } = useMutation({
-      mutationFn: (addUserAsset: UserAsset) => {
-        return AddCartItemAPI(addUserAsset);
-      },
+      mutationFn: (addUserAsset: UserAsset) => AddCartItemAPI(addUserAsset),
       onSuccess: () => {
         toast({
           title: "Success",
@@ -57,6 +55,7 @@ const AssetDetail = React.forwardRef<HTMLDivElement, AssetDetailProps>(
       price: asset.price,
       quantity: 1,
       imgPath: asset.imgPath,
+      isSelect: true,
     };
     return (
       <div className={cn(className)} ref={ref} {...props}>
@@ -66,7 +65,7 @@ const AssetDetail = React.forwardRef<HTMLDivElement, AssetDetailProps>(
             className="w-full object-contain md:w-4/5 lg:h-[500px] lg:w-auto"
           />
         </div>
-        <div className="flex flex-col gap-4 bg-background px-5 py-12">
+        <div className="flex flex-col gap-4 bg-background px-5 py-12 md:px-12 lg:px-24">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-4">
               <p className="text-5xl font-bold">{asset.name}</p>
@@ -92,7 +91,7 @@ const AssetDetail = React.forwardRef<HTMLDivElement, AssetDetailProps>(
             </div>
             {isLogin && (
               <Button
-                className="flex h-14 w-fit items-center gap-2 rounded-full bg-purple px-8 text-xl hover:bg-purple lg:mr-36"
+                className="flex h-14 w-fit items-center gap-2 rounded-full bg-purple px-8 text-xl hover:bg-purple"
                 onClick={() => mutate(addUserAsset)}
               >
                 Add

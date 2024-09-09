@@ -34,6 +34,16 @@ public class KafkaConfig {
 
     @Bean
     NewTopic createMessage() {
-        return new NewTopic("message", 1, (short) 1);
+        return new NewTopic("notification", 1, (short) 1);
+    }
+
+    @Bean
+    NewTopic createUpdateFollower() {
+        return new NewTopic("update_follower", 1, (short) 1);
+    }
+
+    @Bean
+    NewTopic createOrder() {
+        return new NewTopic("order", 1, (short) 1);
     }
 }

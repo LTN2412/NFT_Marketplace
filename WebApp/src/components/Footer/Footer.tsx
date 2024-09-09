@@ -1,12 +1,15 @@
-import StoreFrontIcon from "@/assets/Storefront.svg?react";
-import EmailIcon from "@/assets/Email.svg?react";
 import { Link } from "react-router-dom";
+
+import EmailIcon from "@/assets/Email.svg?react";
+import StoreFrontIcon from "@/assets/Storefront.svg?react";
+
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import Community from "./Community/Community";
+
 export default function Footer() {
   return (
-    <div className="bg-background px-5 py-12 md:px-12">
+    <div className="bg-background px-5 py-12 md:px-12 lg:px-24">
       <div className="flex flex-col gap-2 lg:flex-row lg:justify-between">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-3 font-mono text-2xl">
@@ -57,7 +60,7 @@ export default function Footer() {
           </p>
         </div>
       </div>
-      <div className="w-full border-t border-gray bg-background px-24 py-6 text-lightGray max-lg:hidden">
+      <div className="w-full border-t border-gray bg-background py-6 text-lightGray max-lg:hidden max-lg:px-24">
         © NFT Marketplace LTN
       </div>
     </div>

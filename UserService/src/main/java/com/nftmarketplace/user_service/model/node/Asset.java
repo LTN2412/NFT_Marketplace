@@ -1,5 +1,7 @@
 package com.nftmarketplace.user_service.model.node;
 
+import java.util.Date;
+
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
@@ -30,4 +32,10 @@ public class Asset {
 
     @Property("img_path")
     String imgPath;
+
+    @Property("created_at")
+    Date createdAt = new Date();
+
+    @Property("updated_at")
+    Date updatedAt = new Date();
 }

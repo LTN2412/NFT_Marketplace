@@ -1,5 +1,6 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
+
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 export default function CollectionCard() {
   const [numberCollections, setNumberCollections] = useState(

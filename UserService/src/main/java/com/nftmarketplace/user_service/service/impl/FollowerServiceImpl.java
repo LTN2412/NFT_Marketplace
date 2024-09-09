@@ -10,7 +10,9 @@ import com.nftmarketplace.user_service.event.producer.EventProducer;
 import com.nftmarketplace.user_service.exception.AppException;
 import com.nftmarketplace.user_service.exception.ErrorCode;
 import com.nftmarketplace.user_service.model.enums.MessageType;
+import com.nftmarketplace.user_service.model.enums.Update;
 import com.nftmarketplace.user_service.model.kafka_model.NotificationKafka;
+import com.nftmarketplace.user_service.model.kafka_model.UpdateFollowerKafka;
 import com.nftmarketplace.user_service.repository.UserRepository;
 import com.nftmarketplace.user_service.service.FollowerService;
 
@@ -41,15 +43,20 @@ public class FollowerServiceImpl implements FollowerService {
                     return Mono.just("Already follow!");
                 return userRepository.addFollower(userRequestId, userReceiveId)
                         .doOnSuccess(_ -> {
-                            userRepository.findById(userReceiveId).flatMap(user -> {
-                                NotificationKafka request = NotificationKafka.builder()
+                            userRepository.findById(userRequestId).flatMap(user -> {
+                                NotificationKafka notificationKafka = NotificationKafka.builder()
                                         .userRequestId(userRequestId)
                                         .userRequestName(user.getName())
                                         .userRequestAvatarPath(user.getAvatarPath())
                                         .userReceiveId(userReceiveId)
-                                        .messageType(MessageType.ADD_FRIEND)
+                                        .messageType(MessageType.ADD_FOLLOWER)
                                         .build();
-                                eventProducer.send("request", gson.toJson(request)).subscribe();
+                                UpdateFollowerKafka updateFollowerKafka = UpdateFollowerKafka.builder()
+                                        .userId(userReceiveId)
+                                        .update(Update.ADD)
+                                        .build();
+                                eventProducer.send("notification", gson.toJson(notificationKafka)).subscribe();
+                                eventProducer.send("update_follower", gson.toJson(updateFollowerKafka)).subscribe();
                                 return Mono.empty();
                             }).subscribe();
                         })
@@ -60,27 +67,22 @@ public class FollowerServiceImpl implements FollowerService {
 
     @Override
     public Mono<String> unFollower(String userRequestId, String userReceiveId) {
-        return checkExistUsers(userRequestId, userReceiveId).then(Mono.defer(() -> {
-            return checkFollowerStatus(userRequestId, userReceiveId).flatMap(isFollow -> {
-                if (!isFollow)
-                    return Mono.just("Not follow to unfollow!");
-                return userRepository.unFollower(userRequestId, userReceiveId)
-                        .doOnSuccess(_ -> {
-                            userRepository.findById(userReceiveId).flatMap(user -> {
-                                NotificationKafka request = NotificationKafka.builder()
-                                        .userRequestId(userRequestId)
-                                        .userRequestName(user.getName())
-                                        .userRequestAvatarPath(user.getAvatarPath())
-                                        .userReceiveId(userReceiveId)
-                                        .messageType(MessageType.ADD_FRIEND)
-                                        .build();
-                                eventProducer.send("request", gson.toJson(request)).subscribe();
-                                return Mono.empty();
-                            }).subscribe();
-                        })
-                        .then(Mono.just("Unfollow completed!"));
-            });
-        }));
+        return checkExistUsers(userRequestId, userReceiveId)
+                .then(Mono.defer(() -> checkFollowerStatus(userRequestId, userReceiveId)
+                        .flatMap(isFollow -> {
+                            if (!isFollow)
+                                return Mono.just("Not following to unfollow!");
+                            return userRepository.unFollower(userRequestId, userReceiveId)
+                                    .doOnSuccess(_ -> {
+                                        UpdateFollowerKafka updateFollowerKafka = UpdateFollowerKafka.builder()
+                                                .userId(userReceiveId)
+                                                .update(Update.REMOVE)
+                                                .build();
+                                        eventProducer.send("update_follower", gson.toJson(updateFollowerKafka))
+                                                .subscribe();
+                                    })
+                                    .thenReturn("Unfollow completed!");
+                        })));
     }
 
     @Override

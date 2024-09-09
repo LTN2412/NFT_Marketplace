@@ -1,5 +1,7 @@
 package com.nftmarketplace.asset_elastic_service.service.impl;
 
+import java.util.Set;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +46,11 @@ public class AssetServiceImpl implements AssetService {
                     return assetRepository.save(asset);
                 })
                 .then();
+    }
+
+    @Override
+    public Flux<Asset> getAllAssetsById(Set<String> request) {
+        return assetRepository.findAllById(request);
     }
 
     @Override

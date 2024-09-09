@@ -21,18 +21,21 @@ export interface ListCardsProps extends HTMLAttributes<HTMLDivElement> {
 
 const ListCards = React.forwardRef<HTMLDivElement, ListCardsProps>(
   ({ className, queryOption, param, cardType, ...props }, ref) => {
-    const [limit, setLimit] = useState<number>();
+    const [limit, setLimit] = useState<number>(9);
+
     useEffect(() => {
       if (window.innerWidth <= 640) setLimit(3);
       else if (window.innerWidth <= 1024) setLimit(6);
       else setLimit(9);
     }, []);
-    const { data, isLoading, isError } = useQuery(queryOption(param, limit!));
 
-    if (isLoading) return <SkeletonListCards limit={Array(limit).fill(0)} />;
+    const { data, isLoading, isError } = useQuery(queryOption(param, limit));
+
+    if (isLoading) return <SkeletonListCards limit={limit} />;
     if (isError) return <ErrorPage />;
 
-    const assets: Asset[] = data!.data.result || Array(limit).fill(0);
+    const assets: Asset[] = data?.data.result || [];
+
     return (
       <div
         className={cn(
@@ -44,6 +47,7 @@ const ListCards = React.forwardRef<HTMLDivElement, ListCardsProps>(
       >
         {assets.map((asset) => (
           <Card
+            key={asset.id}
             assetId={asset.id}
             assetName={asset.name}
             assetImg={"/test.png"}
@@ -52,12 +56,14 @@ const ListCards = React.forwardRef<HTMLDivElement, ListCardsProps>(
             authorId={asset.authorId}
             authorName={asset.authorName}
             authorAvatar={asset.authorAvatarPath}
-            className={`${cardType}`}
+            className={cardType}
           />
         ))}
       </div>
     );
   },
 );
+
+ListCards.displayName = "ListCards";
 
 export default ListCards;

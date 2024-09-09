@@ -1,7 +1,10 @@
-import { Button } from "@/components/ui/button";
-import RocketLaunchIcon from "@/assets/RocketLaunch.svg?react";
-import ArtistGrid from "./ArtistGrid/ArtistGrid";
 import { Link } from "react-router-dom";
+
+import RocketLaunchIcon from "@/assets/RocketLaunch.svg?react";
+
+import { Button } from "@/components/ui/button";
+
+import ArtistGrid from "./ArtistGrid/ArtistGrid";
 
 export default function TopCreator() {
   return (

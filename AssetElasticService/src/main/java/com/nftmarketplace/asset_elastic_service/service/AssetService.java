@@ -1,5 +1,7 @@
 package com.nftmarketplace.asset_elastic_service.service;
 
+import java.util.Set;
+
 import com.nftmarketplace.asset_elastic_service.model.Asset;
 import com.nftmarketplace.asset_elastic_service.model.kafka_model.AssetKafka;
 import com.nftmarketplace.asset_elastic_service.model.kafka_model.CommentKafka;
@@ -13,6 +15,8 @@ public interface AssetService {
     Mono<Void> addComment(CommentKafka commentKafka);
 
     Mono<Asset> getAsset(String assetId);
+
+    Flux<Asset> getAllAssetsById(Set<String> request);
 
     Flux<Asset> getAllAssets();
 

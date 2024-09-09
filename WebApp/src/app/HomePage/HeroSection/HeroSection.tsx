@@ -1,5 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+
 import RocketLaunchIcon from "@/assets/RocketLaunch.svg?react";
+
+import { Button } from "@/components/ui/button";
+
 import HighlightNFT from "./HighlightNFT/HighlightNFT";
 
 export default function HeroSection() {
@@ -15,10 +19,12 @@ export default function HeroSection() {
         </p>
       </div>
       <HighlightNFT />
-      <Button className="w-3/4 gap-2 rounded-2xl bg-purple p-7 text-xl hover:bg-purple lg:w-fit lg:place-self-start">
-        <RocketLaunchIcon className="w-6 fill-current text-foreground" />
-        <p>Get Started</p>
-      </Button>
+      <Link to={"/signup"} className="md:w-fit md:place-self-start">
+        <Button className="gap-2 rounded-2xl bg-purple p-7 text-xl hover:bg-purple lg:w-fit lg:place-self-start">
+          <RocketLaunchIcon className="w-6 fill-current text-foreground" />
+          <p>Get Started</p>
+        </Button>
+      </Link>
       <div className="flex w-full items-center justify-between whitespace-nowrap px-5 text-xl lg:text-3xl">
         <div>
           <p className="font-bold">240k+</p>

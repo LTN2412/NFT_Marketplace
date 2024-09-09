@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import com.nftmarketplace.asset_elastic_service.exception.AppException;
 import com.nftmarketplace.asset_elastic_service.exception.ErrorCode;
 import com.nftmarketplace.asset_elastic_service.model.Author;
+import com.nftmarketplace.asset_elastic_service.model.enums.Update;
 import com.nftmarketplace.asset_elastic_service.model.kafka_model.AssetKafka;
 import com.nftmarketplace.asset_elastic_service.model.kafka_model.AuthorKafka;
 import com.nftmarketplace.asset_elastic_service.model.kafka_model.ChangeAuthorKafka;
+import com.nftmarketplace.asset_elastic_service.model.kafka_model.UpdateFollowerKafka;
 import com.nftmarketplace.asset_elastic_service.repository.AuthorRepository;
 import com.nftmarketplace.asset_elastic_service.service.AuthorService;
 import com.nftmarketplace.asset_elastic_service.utils.mapper.AuthorMapper;
@@ -19,12 +21,14 @@ import com.nftmarketplace.asset_elastic_service.utils.mapper.AuthorMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class AuthorServiceImpl implements AuthorService {
 
     AuthorRepository authorRepository;
@@ -44,6 +48,17 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    public Mono<Void> updateFollower(UpdateFollowerKafka updateFollowerKafka) {
+        return authorRepository.findById(updateFollowerKafka.getUserId()).flatMap(author -> {
+            if (updateFollowerKafka.getUpdate().name() == Update.ADD.name())
+                author.setFollowers(author.getFollowers() + 1);
+            else
+                author.setFollowers(author.getFollowers() - 1);
+            return authorRepository.save(author).then();
+        });
+    }
+
+    @Override
     public Mono<Void> addAsset(AssetKafka assetKafka) {
         return authorRepository.findById(assetKafka.getAuthorId())
                 .flatMap(author -> {
@@ -56,6 +71,11 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Mono<Author> getAuthor(String authorId) {
         return checkExistAuthors(authorId).then(Mono.defer(() -> authorRepository.findById(authorId)));
+    }
+
+    @Override
+    public Flux<Author> getAuthorsPageale(Integer offset, Integer limit) {
+        return authorRepository.findAll(PageRequest.of(offset, limit));
     }
 
     @Override
@@ -72,6 +92,11 @@ public class AuthorServiceImpl implements AuthorService {
     public Flux<Author> getTopAuthors(Integer limit) {
         return authorRepository
                 .findAll(PageRequest.of(0, limit, Sort.by(new Order(Direction.DESC, "volumne"))));
+    }
+
+    @Override
+    public Flux<Author> searchAuthors(String query, Integer limit) {
+        return authorRepository.searchAuthors(query, PageRequest.of(0, limit));
     }
 
     @Override

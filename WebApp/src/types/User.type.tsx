@@ -23,6 +23,7 @@ export interface UserAsset {
   price: number;
   quantity: number;
   imgPath: string;
+  isSelect: boolean;
 }
 
 export type CartUserResponse = APIResponse & {

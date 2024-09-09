@@ -9,3 +9,13 @@ export type CountResponse = {
   code: number;
   result: number;
 };
+
+export type IdsResponse = {
+  code: number;
+  result: string[];
+};
+
+export type BooleanResponse = {
+  code: number;
+  result: boolean;
+};

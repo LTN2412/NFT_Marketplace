@@ -15,7 +15,7 @@ export interface Asset {
   updatedAt: string;
 }
 
-export type AssetCardsResponse = APIResponse & {
+export type AssetsResponse = APIResponse & {
   result: Asset[];
 };
 

@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { CreateAccountAPI, FetchTokenAPI } from "@/apis/query/AccountAPI";
 import EmailIcon from "@/assets/Email.svg?react";
+import EyeCloseIcon from "@/assets/EyeClose.svg?react";
+import EyeOpenIcon from "@/assets/EyeOpen.svg?react";
 import LockIccon from "@/assets/Lock.svg?react";
 import UserIccon from "@/assets/User.svg?react";
 import { FormDataSignIn } from "@/types/schema/SignInSchema";
@@ -31,6 +33,8 @@ export default function SignUp() {
     resolver: zodResolver(SignUpSchema),
   });
   const [isPending, setIsPending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showVerifyPassword, setShowVerifyPassword] = useState(false);
   const navigate = useNavigate();
 
   const createAccountMutation = useMutation({
@@ -38,7 +42,6 @@ export default function SignUp() {
     onMutate: () => setIsPending(true),
     onSettled: () => setIsPending(false),
     onSuccess: () => {
-      // After successful account creation, fetch the token
       const { username, password } = getValues();
       fetchTokenMutation.mutate({ username, password });
     },
@@ -74,6 +77,14 @@ export default function SignUp() {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleVerifyPasswordVisibility = () => {
+    setShowVerifyPassword(!showVerifyPassword);
+  };
+
   return (
     <div className="flex flex-col gap-5 px-12 py-6">
       <h3>Create Account</h3>
@@ -98,21 +109,51 @@ export default function SignUp() {
             {...register("email")}
           />
           <p className="text-purple">{errors.email?.message}</p>
-          <Input
-            type="password"
-            placeholder="Password"
-            StartIcon={<LockIccon className="ml-4 w-8 fill-gray" />}
-            className="h-14 rounded-3xl pl-14"
-            {...register("password")}
-          />
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              StartIcon={<LockIccon className="ml-4 w-8 fill-gray" />}
+              EndIcon={
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute right-4 top-1/2 -translate-y-1/2"
+                >
+                  {showPassword ? (
+                    <EyeOpenIcon className="w-6 stroke-gray" />
+                  ) : (
+                    <EyeCloseIcon className="w-6 fill-gray" />
+                  )}
+                </button>
+              }
+              className="h-14 rounded-3xl pl-14 pr-14"
+              {...register("password")}
+            />
+          </div>
           <p className="text-purple">{errors.password?.message}</p>
-          <Input
-            type="password"
-            placeholder="Verify Password"
-            StartIcon={<LockIccon className="ml-4 w-8 fill-gray" />}
-            className="h-14 rounded-3xl pl-14"
-            {...register("verifyPassword")}
-          />
+          <div className="relative">
+            <Input
+              type={showVerifyPassword ? "text" : "password"}
+              placeholder="Verify Password"
+              StartIcon={<LockIccon className="ml-4 w-8 fill-gray" />}
+              EndIcon={
+                <button
+                  type="button"
+                  onClick={toggleVerifyPasswordVisibility}
+                  className="absolute right-4 top-1/2 -translate-y-1/2"
+                >
+                  {showVerifyPassword ? (
+                    <EyeOpenIcon className="w-6 stroke-gray" />
+                  ) : (
+                    <EyeCloseIcon className="w-6 fill-gray" />
+                  )}
+                </button>
+              }
+              className="h-14 rounded-3xl pl-14 pr-14"
+              {...register("verifyPassword")}
+            />
+          </div>
           <p className="text-purple">{errors.verifyPassword?.message}</p>
           <Button
             type="submit"

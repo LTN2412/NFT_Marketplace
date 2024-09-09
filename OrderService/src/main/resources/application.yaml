@@ -1,9 +1,11 @@
+server:
+  port: 8086
 spring:
   application:
     name: Order Service
   data:
     mongodb:
-      uri: mongodb+srv://ltn2412:<password>@cluster1.vsmjygc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1
+      uri: mongodb+srv://ltn2412:nhatprola1@cluster1.vsmjygc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1
       database: Cluster1
   kafka:
     bootstrap-servers: localhost:9092

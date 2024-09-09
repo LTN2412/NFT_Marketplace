@@ -2,6 +2,7 @@ package com.nftmarketplace.asset_elastic_service.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,6 +38,21 @@ public class AuthorController {
                                                 .build());
         }
 
+        @GetMapping("/page")
+        public Mono<APIResponse<Set<Author>>> getAuthorPageable(@RequestParam Integer offset, Integer limit) {
+                return Mono.zip(authorService.getAuthorsPageale(offset, limit)
+                                .collect(Collectors.toSet()),
+                                authorService.countAllAuthors())
+                                .flatMap(tuple -> {
+                                        return Mono.just(APIResponse
+                                                        .<Set<Author>>builder()
+                                                        .result(tuple.getT1())
+                                                        .totalElement(tuple.getT2())
+                                                        .totalPage(Math.ceilDiv(tuple.getT2(), limit))
+                                                        .build());
+                                });
+        }
+
         @GetMapping(path = "/all", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
         public Flux<APIResponse<Author>> getAllAuthors() {
                 return authorService.getAllAuthors()
@@ -47,7 +63,7 @@ public class AuthorController {
         }
 
         @GetMapping(path = "/top")
-        public Mono<APIResponse<List<Author>>> getMethodName(@RequestParam Integer limit) {
+        public Mono<APIResponse<List<Author>>> getTopAuthors(@RequestParam Integer limit) {
                 return authorService.getTopAuthors(limit)
                                 .collect(Collectors.toList())
                                 .map(author -> APIResponse
@@ -62,6 +78,17 @@ public class AuthorController {
                                 .map(numberAuthors -> APIResponse
                                                 .<Long>builder()
                                                 .result(numberAuthors)
+                                                .build());
+        }
+
+        @GetMapping("/search")
+        public Mono<APIResponse<List<Author>>> searchAuthors(@RequestParam String query,
+                        @RequestParam(defaultValue = "5") Integer limit) {
+                return authorService.searchAuthors(query, limit)
+                                .collectList()
+                                .map(authors -> APIResponse
+                                                .<List<Author>>builder()
+                                                .result(authors)
                                                 .build());
         }
 }

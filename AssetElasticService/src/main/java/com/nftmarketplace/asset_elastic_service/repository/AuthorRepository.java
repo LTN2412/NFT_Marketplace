@@ -19,4 +19,27 @@ public interface AuthorRepository extends ReactiveElasticsearchRepository<Author
             }
             """)
     Flux<Author> findAll(Pageable pageable);
+
+    @Query("""
+            {
+                "bool": {
+                    "should": [
+                        {
+                            "match": {
+                                "name": {
+                                    "query": "#{#query}",
+                                    "fuzziness": "AUTO"
+                                }
+                            }
+                        },
+                        {
+                            "match_phrase_prefix": {
+                                "name": "#{#query}"
+                            }
+                        }
+                    ]
+                }
+            }
+            """)
+    Flux<Author> searchAuthors(String query, Pageable pageable);
 }

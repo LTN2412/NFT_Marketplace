@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.nftmarketplace.user_service.event.producer.EventProducer;
 import com.nftmarketplace.user_service.exception.AppException;
 import com.nftmarketplace.user_service.exception.ErrorCode;
+import com.nftmarketplace.user_service.model.dto.request.UpdateUserRequest;
 import com.nftmarketplace.user_service.model.dto.request.UserRequest;
 import com.nftmarketplace.user_service.model.dto.response.UserFlat;
 import com.nftmarketplace.user_service.model.kafka_model.ChangeAuthorKafka;
@@ -33,23 +34,19 @@ public class UserServiceImpl implements UserService {
     EventProducer eventProducer;
     Gson gson = new Gson();
 
-    // @Override
-    // public Mono<UserFlat> createUser(UserRequest request) {
-    // return Mono.zip(
-    // userRepository.existsById(request.getId()),
-    // userRepository.existsByPhoneNumber(request.getPhoneNumber()))
-    // .flatMap(tuple -> {
-    // if (tuple.getT1() || tuple.getT2())
-    // return Mono.error(new AppException(ErrorCode.EXISTED));
-    // User user = UserMapper.INSTANCE.toUser(request);
-    // return userRepository.save(user)
-    // .flatMap(saveUser -> Mono.just(UserMapper.INSTANCE.toUserFlat(saveUser)));
-    // });
-    // }
     @Override
     public Mono<UserFlat> createUser(UserRequest request) {
-        // TODO Auto-generated method stub
-        return null;
+        return Mono.zip(
+                userRepository.existsById(request.getId()),
+                userRepository.existsByEmail(request.getPhoneNumber()),
+                userRepository.existsByPhoneNumber(request.getPhoneNumber()))
+                .flatMap(tuple -> {
+                    if (tuple.getT1() || tuple.getT2() || tuple.getT3())
+                        return Mono.error(new AppException(ErrorCode.EXISTED));
+                    User user = UserMapper.INSTANCE.toUser(request);
+                    return userRepository.save(user)
+                            .flatMap(saveUser -> Mono.just(UserMapper.INSTANCE.toUserFlat(saveUser)));
+                });
     }
 
     @Override
@@ -107,7 +104,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<UserFlat> updateUser(String userId, UserRequest request) {
+    public Mono<UserFlat> updateUser(String userId, UpdateUserRequest request) {
         return userRepository.findById(userId)
                 .switchIfEmpty(Mono.error(new AppException(ErrorCode.NOT_EXISTED)))
                 .flatMap(user -> {

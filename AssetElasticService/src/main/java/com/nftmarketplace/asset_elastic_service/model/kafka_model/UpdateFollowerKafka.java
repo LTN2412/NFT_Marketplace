@@ -1,4 +1,6 @@
-package com.nftmarketplace.order_service.model;
+package com.nftmarketplace.asset_elastic_service.model.kafka_model;
+
+import com.nftmarketplace.asset_elastic_service.model.enums.Update;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,10 +12,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Asset {
-    String id;
-    String assetName;
-    String author;
-    Integer quantity;
-    Float price;
+public class UpdateFollowerKafka {
+    String userId;
+
+    Update update;
 }

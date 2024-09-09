@@ -1,4 +1,4 @@
-package com.marketplace.notification_service.model.kafkaModel;
+package com.marketplace.notification_service.model.kafka_model;
 
 import com.marketplace.notification_service.model.enums.MessageType;
 

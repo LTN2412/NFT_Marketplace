@@ -16,7 +16,7 @@ spring:
     show-sql: true
   kafka:
     bootstrap-servers: localhost:9092
-    producer:     
+    producer:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 jwt:
   secretKey: "0dRyKO2u7rdq53FFNbtCvePJjuyd0QKPwFNonlXN0+1f"

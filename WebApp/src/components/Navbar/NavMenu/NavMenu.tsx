@@ -15,7 +15,7 @@ export default function NavMenu({ isLogin }: NavMenuProps) {
     dropdown?.classList.toggle("hidden");
   };
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center lg:gap-8 lg:text-xl lg:font-medium">
+    <div className="flex flex-col lg:order-1 lg:flex-row lg:items-center lg:gap-8 lg:text-xl lg:font-medium">
       <ListIcon
         className="w-8 cursor-pointer stroke-foreground md:w-10 lg:hidden"
         onClick={handleClick}

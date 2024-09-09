@@ -2,6 +2,7 @@ package com.nftmarketplace.user_service.service;
 
 import org.springframework.http.codec.multipart.FilePart;
 
+import com.nftmarketplace.user_service.model.dto.request.UpdateUserRequest;
 import com.nftmarketplace.user_service.model.dto.request.UserRequest;
 import com.nftmarketplace.user_service.model.dto.response.UserFlat;
 import com.nftmarketplace.user_service.model.kafka_model.CreateAccountKafka;
@@ -22,7 +23,7 @@ public interface UserService {
 
     Mono<UserFlat> updateUserImage(String userId, FilePart image, boolean isAvatar);
 
-    Mono<UserFlat> updateUser(String userId, UserRequest request);
+    Mono<UserFlat> updateUser(String userId, UpdateUserRequest request);
 
     Mono<String> deleteUser(String userId);
 

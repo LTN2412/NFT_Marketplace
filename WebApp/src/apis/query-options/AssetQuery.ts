@@ -1,6 +1,7 @@
 import {
   FetchAllAssetFrom1AuthorAPI,
   FetchAllAssetsByTagAPI,
+  FetchAllAssetsInCart,
   FetchAssetDetailAPI,
   FetchAssetsPageableAPI,
   FetchCountAssetsAPI,
@@ -46,5 +47,13 @@ export const CountAllAssets = () => {
   return queryOptions({
     queryKey: ["assets_count"],
     queryFn: async () => FetchCountAssetsAPI(),
+  });
+};
+
+export const GetAllAssetsInCart = (assetIds: string[], enabled: boolean) => {
+  return queryOptions({
+    queryKey: ["asset_in_cart"],
+    queryFn: async () => FetchAllAssetsInCart(assetIds),
+    enabled: enabled,
   });
 };

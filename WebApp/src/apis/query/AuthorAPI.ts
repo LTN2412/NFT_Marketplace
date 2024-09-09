@@ -17,3 +17,12 @@ export const FetchTopAuthorAPI = async (limit: number) => {
     },
   });
 };
+
+export const FetchSearchAuthorsAPI = async (query: string, limit: number) => {
+  return httpElastic.get<AuthorsResponse>("/author/search", {
+    params: {
+      query: query,
+      limit: limit,
+    },
+  });
+};

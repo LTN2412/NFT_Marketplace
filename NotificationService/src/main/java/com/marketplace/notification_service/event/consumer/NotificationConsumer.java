@@ -5,8 +5,7 @@ import java.util.Collections;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
-
-import com.marketplace.notification_service.model.kafkaModel.NotificationKafka;
+import com.marketplace.notification_service.model.kafka_model.NotificationKafka;
 import com.marketplace.notification_service.service.MessageService;
 import com.marketplace.notification_service.utils.mapper.MessageMapper;
 import com.marketplace.notification_service.ws.WebSocketHandlerImpl;
@@ -19,10 +18,11 @@ import reactor.kafka.receiver.ReceiverOptions;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@SuppressWarnings("unused")
 public class NotificationConsumer {
     Gson gson = new Gson();
+    @SuppressWarnings("unused")
     MessageService messageService;
+    @SuppressWarnings("unused")
     WebSocketHandlerImpl webSocketHandler;
 
     public NotificationConsumer(ReceiverOptions<String, String> receiverOptions,

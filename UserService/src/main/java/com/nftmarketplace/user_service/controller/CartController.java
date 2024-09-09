@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nftmarketplace.user_service.model.dto.APIResponse;
 import com.nftmarketplace.user_service.model.dto.request.AssetRequest;
-import com.nftmarketplace.user_service.model.node.Asset;
+import com.nftmarketplace.user_service.model.dto.response.AssetInCart;
 import com.nftmarketplace.user_service.service.CartService;
 
 import lombok.AccessLevel;
@@ -28,23 +28,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequestMapping("/user/asset")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AssetController {
+public class CartController {
         CartService assetService;
 
         @GetMapping
-        public Mono<APIResponse<Set<Asset>>> getAllAssetsInCartFrom1User(@AuthenticationPrincipal Jwt jwt) {
+        public Mono<APIResponse<Set<AssetInCart>>> getAllAssetsInCartFrom1User(@AuthenticationPrincipal Jwt jwt) {
                 return assetService.getAllAssetsInCartFrom1User(jwt.getSubject())
                                 .collect(Collectors.toSet())
-                                .map(assets -> APIResponse.<Set<Asset>>builder()
+                                .map(assets -> APIResponse.<Set<AssetInCart>>builder()
                                                 .result(assets)
                                                 .build());
         }
 
-        @GetMapping("/select")
-        public Mono<APIResponse<Set<Asset>>> getAllAssetsIsSelectInCartFrom1User(@AuthenticationPrincipal Jwt jwt) {
+        @PostMapping("/order")
+        public Mono<APIResponse<Set<AssetInCart>>> orderAssets(
+                        @AuthenticationPrincipal Jwt jwt) {
                 return assetService.getAllAssetsIsSelectInCartFrom1User(jwt.getSubject())
-                                .collect(Collectors.toSet())
-                                .map(assets -> APIResponse.<Set<Asset>>builder()
+                                .map(assets -> APIResponse.<Set<AssetInCart>>builder()
                                                 .result(assets)
                                                 .build());
         }
@@ -75,5 +75,14 @@ public class AssetController {
                                                 .builder()
                                                 .message(message)
                                                 .build());
-        };
+        }
+
+        @DeleteMapping("/deleteOrder")
+        public Mono<APIResponse<?>> deleteOrder(@AuthenticationPrincipal Jwt jwt) {
+                return assetService.deleteAllAssetsIsSelected(jwt.getSubject())
+                                .map(message -> APIResponse
+                                                .builder()
+                                                .message(message)
+                                                .build());
+        }
 }

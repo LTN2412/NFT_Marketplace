@@ -17,8 +17,10 @@ import reactor.kafka.receiver.ReceiverOptions;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AssetConsumer {
     Gson gson = new Gson();
+
     @SuppressWarnings("unused")
     AssetService assetService;
+
     @SuppressWarnings("unused")
     AuthorService authorService;
 
